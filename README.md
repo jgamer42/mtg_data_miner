@@ -4,6 +4,10 @@
 
 - For get the price of the cards is used the page [TCGPlayer](https://shop.tcgplayer.com/magic?newSearch=true) because starcitygames blocks the scraping
 
+- For metagame info is used:  
+  - Scrapped the page [MtgGoldfish](https://www.mtggoldfish.com/metagame/standard#paper)
+  - Use the [mtgMeta](https://mtgmeta.io/docs)
+
 ## Tecnologies
 
 - scrapy

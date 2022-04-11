@@ -68,9 +68,8 @@ def clean_sections(section):
         for p in posible_sections:
             if p in s:
                 for card in section[s]:
-                    print(card)
                     clean_card = clean_cards(card)
-                    print(clean_card)
+                    cleaned_cards.append(clean_card)
                 sections[p] = cleaned_cards
     return sections
 
@@ -80,14 +79,12 @@ def clean_cards(noise_card):
         "cuantity":noise_card["cuantity"]
 
     }
-    clean_rarity = re.findall(r"[0-9]",noise_card["rarity"])
-    if clean_rarity:
+    if output.get("name").lower() not in ["swamp","plains","forest","island","mountain"]:
+        clean_rarity = re.findall(r"[0-9]?",noise_card.get("rarity","1"))
         clean_rarity = noise_card["rarity"].replace(clean_rarity[0],"")
-    else:
-        clean_rarity = noise_card["rarity"]
-    output["rarity"] = clean_rarity
-    aditional_fields = mtg_api.get_card_info_by_name(output["name"])
-    output.update(aditional_fields)
+        aditional_fields = mtg_api.get_card_info_by_name(output["name"],True if not clean_rarity else False)
+        output["rarity"] = clean_rarity
+        output.update(aditional_fields)
     return output
 
 
