@@ -5,11 +5,6 @@
 
 import scrapy
 
-class ExtractItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
-
 class Staple(scrapy.Item):
     name = scrapy.Field()
     mana_cost = scrapy.Field()

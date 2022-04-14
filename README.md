@@ -1,4 +1,4 @@
-## Aditional info
+# Aditional info
 
 - For get deep card info is used this [API](https://docs.magicthegathering.io/)
 
@@ -12,9 +12,15 @@
 
 - scrapy
 - pandas
+- mypy
 
 ## Main questions
 
 - What is the cheapest format on Magic
 - Which de dominant collection on each format
 - Who is the strongest color on each format
+
+## To do
+
+- Migrate the scrappy section to MyPy
+- Documentate all system and use pydoc to generate the doc

@@ -1,6 +1,6 @@
 import scrapy   
 from lxml import html
-from extract.items import Staple
+from scraped_websites.items import Staple
 
 class GoldFishSpider(scrapy.Spider):
     name = "goldfish_staples"
