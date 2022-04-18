@@ -14,6 +14,10 @@
 - pandas
 - mypy
 
+## Flows enabled
+
+- Traditional magic formats
+
 ## Main questions
 
 - What is the cheapest format on Magic
@@ -24,3 +28,5 @@
 
 - Migrate the scrappy section to MyPy
 - Documentate all system and use pydoc to generate the doc
+- Automate the formats rotation
+- Build the flow to commander format

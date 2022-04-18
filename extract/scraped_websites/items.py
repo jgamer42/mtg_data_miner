@@ -5,6 +5,7 @@
 
 import scrapy
 
+
 class Staple(scrapy.Item):
     name = scrapy.Field()
     mana_cost = scrapy.Field()

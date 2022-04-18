@@ -1,0 +1,45 @@
+{
+    "noiseTypeSets": [
+        "promo",
+        "funny",
+        "masterpiece",
+        "token",
+        "box",
+        "duel_deck",
+        "vanguard",
+        "premium_deck",
+        "memorabilia",
+        "archenemy",
+        "commander",
+        "masters",
+        "planechase",
+        "starter",
+        "from_the_vault",
+        "arsenal"
+    ],
+    "noiseCodes": [
+        "DBL",
+        "H1R"
+    ],
+    "cardMainTypes": [
+        "Spells",
+        "Artifacts",
+        "Lands",
+        "Enchantments",
+        "Creatures",
+        "Planeswalkers"
+    ],
+    "basicLands": [
+        "swamp",
+        "plains",
+        "forest",
+        "island",
+        "mountain"
+    ],
+    "formats": [
+        "standard",
+        "modern",
+        "pioneer",
+        "pauper"
+    ]
+}
