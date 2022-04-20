@@ -26,4 +26,7 @@ class contextHelper(object):
         return self.config.get("basicLands")
 
     def get_format_information(self, format: str) -> dict:
-        return self.config.get("formats_meta_info").get(format)
+        return self.config.get("formatsMetaInfo").get(format)
+
+    def get_allowed_formats(self) -> list:
+        return self.config.get("formats")

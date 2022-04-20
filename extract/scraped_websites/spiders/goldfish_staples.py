@@ -1,17 +1,25 @@
 import scrapy
+import sys
 from lxml import html
 from scraped_websites.items import Staple
 
+sys.path.append("../")
+from utils.context_helper import contextHelper
 
-class GoldFishSpider(scrapy.Spider):
+
+class GoldFishSpiderStaples(scrapy.Spider):
     name = "goldfish_staples"
-    formats = ["standard", "modern", "pioneer", "pauper"]
-    staples_urls = [
-        f"https://www.mtggoldfish.com/format-staples/{game_format}"
-        for game_format in formats
-    ]
-    start_urls = staples_urls
     custom_settings = {"ROBOTSTXT_OBEY": True, "CONCURRENT_REQUESTS": 30}
+
+    def __init__(self, format: str, *args, **kwargs):
+        context_heler: contextHelper = contextHelper()
+        if format in context_heler.get_allowed_formats():
+            super(GoldFishSpiderStaples.self).__init__(*args, **kwargs)
+            self.start_urls: list = [
+                f"https://www.mtggoldfish.com/format-staples/{format}"
+            ]
+        else:
+            return None
 
     def parse(self, response):
         format = response._get_url().split("/")[-1]
