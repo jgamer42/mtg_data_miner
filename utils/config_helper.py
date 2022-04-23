@@ -6,7 +6,6 @@ class configHelper(object):
     def __new__(self):
         if not hasattr(self, "instance"):
             self.instance = super(configHelper, self).__new__(self)
-            print("creando")
             self.root_path = "/".join(os.path.abspath(__file__).split("/")[:-2])
             path_to_config_file = self.root_path + "/config.json"
             file = open(path_to_config_file)

@@ -90,5 +90,17 @@ def load_context(context: str) -> dict:
     return raw_data
 
 
+def get_pending_set(set_name: str) -> dict:
+    config_helper: configHelper = configHelper()
+    context_helper: contextHelper = contextHelper()
+    output: dict = {}
+    api_url: str = config_helper.get_mtg_api_card()
+    raw_sets: list = requests.get(f"{api_url}/sets?name={set_name}").json()["sets"]
+    for set in raw_sets:
+        if set.get("type", "") not in context_helper.get_noise_type_sets():
+            output = (set.get("code"), set.get("name"))
+    return output
+
+
 if __name__ == "__main__":
     get_sets()
