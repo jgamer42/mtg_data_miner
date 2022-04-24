@@ -3,6 +3,7 @@ import sys
 sys.path.append("../")
 import re
 import json
+import argparse
 from datetime import datetime
 from io import TextIOWrapper
 from utils import export, clean
@@ -11,9 +12,9 @@ from utils.config_helper import configHelper
 from utils.context_helper import contextHelper
 
 
-def load_raw_data() -> dict:
+def load_raw_data(format: str) -> dict:
     config_helper: configHelper = configHelper()
-    path_of_file: str = config_helper.get_dataset_path() + "/salida.json"
+    path_of_file: str = config_helper.get_dataset_path() + f"/{format}.json"
     file: TextIOWrapper = open(path_of_file, "r")
     raw_data = json.load(file)
     file.close()
@@ -46,12 +47,11 @@ def export_data(data_to_export: dict) -> None:
     data_market_path: str = config_helper.get_datamarket_path()
     date: str = datetime.now().strftime("%Y-%m-%d")
     deck_name: str = data_to_export["name"].replace(" ", "-")
-    output_file: str = f"{data_market_path}/goldfish_{deck_name}_{date}.json"
+    output_file: str = f"{data_market_path}/decks/goldfish_{deck_name}_{date}.json"
     export.export_data(output_file, data_to_export)
 
 
 def clean_sections(section: dict, format: str) -> dict:
-    print(format)
     context_helper: contextHelper = contextHelper()
     posible_sections: list = context_helper.get_posible_card_sections()
     sections: dict = {}
@@ -80,8 +80,8 @@ def clean_cards(noise_card: dict) -> dict:
     return output
 
 
-if __name__ == "__main__":
-    raw_data: dict = load_raw_data()
+def main(format: str) -> None:
+    raw_data: list = load_raw_data(format)
     for data in raw_data:
         clean_raw_data(data)
         if data.get("format_info") is not None:
@@ -93,4 +93,18 @@ if __name__ == "__main__":
             }
         data["sections"] = clean_sections(data.get("sections"), data.get("format"))
         export_data(data)
-        break
+
+
+def get_args() -> dict:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--format",
+        required=True,
+        help="The format to clean",
+    )
+    return vars(parser.parse_args())
+
+
+if __name__ == "__main__":
+    format: dict = get_args().get("format")
+    main(format)

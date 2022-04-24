@@ -144,4 +144,9 @@ cython_debug/
 # End of https://www.toptal.com/developers/gitignore/api/python
 .DS_Store
 data 
-node_modules
+*cache*
+*log*
+*.pid
+airflow.cfg
+*db
+exports.txt

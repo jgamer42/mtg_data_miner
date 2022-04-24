@@ -13,6 +13,7 @@
 - scrapy
 - pandas
 - mypy
+- Apache airflow
 
 ## Flows enabled
 
