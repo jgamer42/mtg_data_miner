@@ -14,7 +14,7 @@ class GoldFishSpiderStaples(scrapy.Spider):
     def __init__(self, format: str, *args, **kwargs):
         context_heler: contextHelper = contextHelper()
         if format in context_heler.get_allowed_formats():
-            super(GoldFishSpiderStaples.self).__init__(*args, **kwargs)
+            super(GoldFishSpiderStaples).__init__(*args, **kwargs)
             self.start_urls: list = [
                 f"https://www.mtggoldfish.com/format-staples/{format}"
             ]
