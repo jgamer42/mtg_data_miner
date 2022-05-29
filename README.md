@@ -31,3 +31,13 @@
 - Documentate all system and use pydoc to generate the doc
 - Automate the formats rotation
 - Build the flow to commander format
+- Check the dupply code when reading args in the scripts
+
+## Doc
+
+- The data folder is used to store the raw decks mined
+
+## Tools
+
+- Run the MTG_API to download the noised and Legals sets
+- Run the mtg_wtk spider to update the collections sets

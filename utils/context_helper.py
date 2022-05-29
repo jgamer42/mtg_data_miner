@@ -38,7 +38,9 @@ class contextHelper(object):
         return self.config.get("cardMainTypes")
 
     def get_basic_lands(self) -> list:
-        return self.config.get("basicLands")
+        return self.config.get("basicLands") + [
+            "snow-covered " + land for land in self.config.get("basicLands")
+        ]
 
     def get_format_information(self, format: str) -> dict:
         return self.formats.get(format)

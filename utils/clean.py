@@ -21,3 +21,10 @@ def clean_dict(data: dict) -> None:
         elif type(data[key]) == str:
             data[key] = data[key].replace("\n", "").strip()
             data[key] = data[key].replace("\xa0", "").strip()
+
+
+def dict_list_2_list(data: dict) -> list:
+    output: list = []
+    for key in data:
+        output += data[key]
+    return output

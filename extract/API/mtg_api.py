@@ -6,7 +6,7 @@ from requests.models import Response
 from datetime import datetime
 
 sys.path.append("../../")
-from utils import export
+from utils import input_output
 from utils.config_helper import configHelper
 from utils.context_helper import contextHelper
 from typing import *
@@ -46,7 +46,7 @@ def get_card_info_by_name(card_name: str, return_rarity) -> dict:
         output["rarity"] = card_to_export["rarity"]
     clean_card_name: str = card_to_export["name"].replace(" ", "-").replace("//", "")
     data_market_path: str = config_helper.get_datamarket_path()
-    export.export_data(
+    input_output.export_data(
         f"{data_market_path}/cards/{clean_card_name}.json", card_to_export
     )
     return output
@@ -78,7 +78,7 @@ def export_set_map(noised_sets: dict, name: str) -> None:
     config_helper: configHelper = configHelper()
     context_path: str = config_helper.get_context_path()
     output_file: str = f"{context_path}/{name}.json"
-    export.export_data(output_file, noised_sets)
+    input_output.export_data(output_file, noised_sets)
 
 
 def load_context(context: str) -> dict:
