@@ -34,7 +34,10 @@ def domain_collection(cards: list) -> str:
             collections[card.get("set_name")] += 1
         else:
             collections[card.get("set_name")] = 1
-    return max(collections, key=collections.get)
+    if collections:
+        return max(collections, key=collections.get)
+    else:
+        return None
 
 
 def mana_wave(cards: list, prename: str = ""):
@@ -90,6 +93,7 @@ if __name__ == "__main__":
         if format in deck and source in deck
     ]
     deck_loader: object = load_decks(decks)
+    date: str = datetime.now().strftime("%Y-%m-%d")
     for deck in deck_loader:
         data_to_export = {
             "name": deck.get("name"),
@@ -101,14 +105,14 @@ if __name__ == "__main__":
             if deck.get("format_info")
             else None,
             "strategy": deck.get("strategy"),
+            "date":date
         }
         cards: list = clean.dict_list_2_list(deck["sections"])
         data_to_export.update(rarity_of_cards(cards))
         data_to_export.update(mana_wave(cards))
         data_to_export["domain_collection"] = domain_collection(cards)
         data_to_export.update(sections_detailed_info(deck["sections"]))
-        output.append(data_to_export)
-    date: str = datetime.now().strftime("%Y-%m-%d")
+        output.append(data_to_export) 
     input_output.export_csv(
         f"{config_helper.get_dataset_path()}/{source}_decks_{format}_{date}.csv", output
     )

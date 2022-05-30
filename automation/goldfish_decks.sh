@@ -10,6 +10,8 @@ do
     python clean_decks.py --format=$format
     output_raw_file="${format}_${current_date}"
     mv ../data/$format.json ../data/raw/goldfish_decks_$output_raw_file.json
+    cd ../transform
+    python transform_decks.py --format=$format --source='goldfish'
     cd ../extract
 done
 cd ..
