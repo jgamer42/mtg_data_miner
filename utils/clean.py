@@ -28,3 +28,7 @@ def dict_list_2_list(data: dict) -> list:
     for key in data:
         output += data[key]
     return output
+
+
+def normalize_string(string_to_clean: str) -> str:
+    return string_to_clean.strip().lower()

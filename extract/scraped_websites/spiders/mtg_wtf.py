@@ -3,6 +3,7 @@ import sys
 
 sys.path.append("../")
 from utils.context_helper import contextHelper
+from utils import clean
 from extract.API import mtg_api
 
 
@@ -30,18 +31,21 @@ class MtgWtf(scrapy.Spider):
             yield self.context_helper.get_legal_sets()
         else:
             output: dict = {}
-            legal_sets: list = self.context_helper.get_legal_sets()
+            legal_sets: list = self.context_helper.get_legal_sets_names()
             scraped_sets: list = response.xpath(self.xpath).getall()
             for scraped_set in scraped_sets:
-                if scraped_set.strip() not in [
-                    legal_sets[legal_set] for legal_set in legal_sets.keys()
-                ]:
-                    pending_set: dict = mtg_api.get_pending_set(scraped_set)
+                clean_set_name: str = clean.normalize_string(scraped_set)
+                if clean_set_name not in legal_sets:
+                    pending_set: dict = mtg_api.get_pending_set(clean_set_name)
                     if pending_set:
                         self.context_helper.add_new_legal_set(pending_set)
-                        output[pending_set[0]] = pending_set[1]
                 else:
-                    for legal_set in legal_sets.keys():
-                        if legal_sets[legal_set].strip() == scraped_set:
-                            output[legal_set] = scraped_set
+                    pending_set: dict = self.context_helper.get_set_info_by_name(
+                        clean_set_name
+                    )
+
+                    output[pending_set.get("code")] = {
+                        "name": pending_set.get("name"),
+                        "release": pending_set.get("release"),
+                    }
             yield output

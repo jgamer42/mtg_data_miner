@@ -11,10 +11,16 @@ class contextHelper(object):
             file = open(path_to_config_file)
             self.config = json.load(file)
             file.close()
+            self.formats: dict = {}
             self.legals_path_file = self.root_path + "/data/context/legals.json"
             legals_file = open(self.legals_path_file)
             self.legals_sets = json.load(legals_file)
-            self.formats: dict = {}
+            # print(self.legals_sets)
+            self.legals_map: dict = {
+                self.legals_sets[k].get("name").lower(): k
+                for k in self.legals_sets.keys()
+            }
+            # self.legals_map: dict = {}
             for format in self.config.get("formats"):
                 try:
                     format_path_file: str = (
@@ -22,7 +28,8 @@ class contextHelper(object):
                     )
                     file = open(format_path_file)
                     format_dict = json.load(file)
-                    self.formats[format] = format_dict[0]
+                    file.close()
+                    self.formats[format] = format_dict
                 except FileNotFoundError:
                     continue
 
@@ -51,8 +58,30 @@ class contextHelper(object):
     def get_legal_sets(self) -> list:
         return self.legals_sets
 
+    def get_legal_sets_names(self) -> list:
+        legal_sets: list = self.legals_sets
+        return [
+            legal_sets[legal_set].get("name").strip().lower()
+            for legal_set in legal_sets.keys()
+        ]
+
     def add_new_legal_set(self, new_set: tuple) -> None:
-        self.legals_sets[new_set[0]] = new_set[1]
+        self.legals_sets[new_set["code"]] = {
+            "name": new_set.get("name"),
+            "release": new_set.get("release"),
+        }
         legals_file = open(self.legals_path_file, "w+")
         json.dump(self.legals_sets, legals_file)
         legals_file.close()
+
+    def get_set_info_by_code(self, set_code: str) -> dict:
+        if set_code in self.legals_sets.keys():
+            return self.legals_sets.get(set_code)
+        else:
+            return {}
+
+    def get_set_info_by_name(self, set_name: str) -> dict:
+        set_code: str = self.legals_map[set_name]
+        output: dict = {"code": set_code}
+        output.update(self.legals_sets[set_code])
+        return output

@@ -68,7 +68,12 @@ def get_sets() -> None:
         ):
             noised_sets[set.get("code")] = set.get("name")
         else:
-            legal_sets[set.get("code")] = set.get("name")
+            legal_sets[set.get("code")] = {
+                "name": set.get("name"),
+                "release": datetime.strptime(
+                    set.get("releaseDate"), "%Y-%m-%d"
+                ).strftime("%m/%d/%Y"),
+            }
 
     export_set_map(noised_sets, "noised")
     export_set_map(legal_sets, "legals")
@@ -98,7 +103,13 @@ def get_pending_set(set_name: str) -> dict:
     raw_sets: list = requests.get(f"{api_url}/sets?name={set_name}").json()["sets"]
     for set in raw_sets:
         if set.get("type", "") not in context_helper.get_noise_type_sets():
-            output = (set.get("code"), set.get("name"))
+            output = {
+                "code": set.get("code"),
+                "name": set.get("name"),
+                "release": datetime.strptime(
+                    set.get("releaseDate"), "%Y-%m-%d"
+                ).strftime("%m/%d/%Y"),
+            }
     return output
 
 
