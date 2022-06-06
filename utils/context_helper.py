@@ -1,5 +1,6 @@
 import os
 import json
+from io import TextIOWrapper
 
 
 class contextHelper(object):
@@ -15,12 +16,10 @@ class contextHelper(object):
             self.legals_path_file = self.root_path + "/data/context/legals.json"
             legals_file = open(self.legals_path_file)
             self.legals_sets = json.load(legals_file)
-            # print(self.legals_sets)
             self.legals_map: dict = {
                 self.legals_sets[k].get("name").lower(): k
                 for k in self.legals_sets.keys()
             }
-            # self.legals_map: dict = {}
             for format in self.config.get("formats"):
                 try:
                     format_path_file: str = (
@@ -50,7 +49,7 @@ class contextHelper(object):
         ]
 
     def get_format_information(self, format: str) -> dict:
-        return self.formats.get(format)
+        return self.formats.get(format, {})
 
     def get_allowed_formats(self) -> list:
         return self.config.get("formats")
@@ -59,18 +58,18 @@ class contextHelper(object):
         return self.legals_sets
 
     def get_legal_sets_names(self) -> list:
-        legal_sets: list = self.legals_sets
+        legal_sets: dict = self.legals_sets
         return [
             legal_sets[legal_set].get("name").strip().lower()
             for legal_set in legal_sets.keys()
         ]
 
-    def add_new_legal_set(self, new_set: tuple) -> None:
+    def add_new_legal_set(self, new_set: dict) -> None:
         self.legals_sets[new_set["code"]] = {
             "name": new_set.get("name"),
             "release": new_set.get("release"),
         }
-        legals_file = open(self.legals_path_file, "w+")
+        legals_file: TextIOWrapper = open(self.legals_path_file, "w+")
         json.dump(self.legals_sets, legals_file)
         legals_file.close()
 
@@ -85,3 +84,26 @@ class contextHelper(object):
         output: dict = {"code": set_code}
         output.update(self.legals_sets[set_code])
         return output
+
+    def get_color_name(self, color: str) -> str:
+        number_of_colors: int = len(color)
+        if color:
+            if number_of_colors == 1:
+                return self.config["colors"][str(number_of_colors)][color]
+            elif number_of_colors == 5:
+                return "five_colors"
+            else:
+                for combination in (
+                    self.config.get("colors").get(str(number_of_colors)).keys()
+                ):
+                    if set(combination) == set(color):
+                        break
+                return (
+                    self.config.get("colors")
+                    .get(str(number_of_colors))
+                    .get(combination)
+                )
+        return "uncolor"
+
+    def get_strategies(self) -> list:
+        return self.config.get("strategies")

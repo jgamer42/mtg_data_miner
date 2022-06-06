@@ -44,10 +44,10 @@ def export_data(data_to_export: dict, format: str = "") -> None:
     output_file: str = (
         f"{data_market_path}/decks/goldfish_{format}_{deck_name}_{date}.json"
     )
-    input_output.export_data(output_file, data_to_export)
+    input_output.export_json(output_file, data_to_export)
 
 
-def clean_sections(section: dict) -> dict:
+def clean_sections(section: dict, format: str) -> dict:
     context_helper: contextHelper = contextHelper()
     posible_sections: list = context_helper.get_posible_card_sections()
     sections: dict = {}
@@ -56,7 +56,7 @@ def clean_sections(section: dict) -> dict:
         cleaned_cards = []
         if section_name in posible_sections:
             for card in section[s]:
-                clean_card: dict = clean_cards(card)
+                clean_card: dict = clean_cards(card, format)
                 cleaned_cards.append(clean_card)
             sections[section_name] = cleaned_cards
             if section_name.lower() == "lands":
@@ -66,7 +66,7 @@ def clean_sections(section: dict) -> dict:
     return sections
 
 
-def clean_cards(noise_card: dict) -> dict:
+def clean_cards(noise_card: dict, format: str) -> dict:
     output: dict = {"name": noise_card["name"], "cuantity": noise_card["cuantity"]}
     context_helper: contextHelper = contextHelper()
     if output.get("name", "").lower() not in context_helper.get_basic_lands():
@@ -79,15 +79,39 @@ def clean_cards(noise_card: dict) -> dict:
         )
         output["rarity"] = clean_rarity
         output.update(aditional_fields)
+        set_info: dict = search_real_set(output.get("re-prints", []), format)
+        output.update(set_info)
     return output
+
+
+def search_real_set(reprints: list, format: str) -> dict:
+    context_helper: contextHelper = contextHelper()
+    legals: dict = context_helper.get_format_information(format)
+    allowed_reprints: list = []
+    for reprint in reprints:
+        if reprint in legals.keys() or reprint in ["VOW"]:
+            allowed: dict = legals[reprint]
+            allowed.update({"code": reprint})
+            allowed_reprints.append(allowed)
+    allowed_reprints = sorted(
+        allowed_reprints,
+        key=lambda rep: datetime.strptime(rep.get("release"), "%m/%d/%Y").date(),
+    )
+    try:
+        return {
+            "set_name": allowed_reprints[0].get("name"),
+            "set": allowed_reprints[0].get("code"),
+        }
+    except:
+        return {"set_name": "Innistrad: Crimson Vow", "set": "VOW"}
 
 
 if __name__ == "__main__":
     config_helper: configHelper = configHelper()
     args: dict = config_helper.args_constraint()
-    format: str = args.get("format")
+    format: str = args.get("format", "")
     path_of_file: str = config_helper.get_dataset_path() + f"/{format}.json"
-    raw_data: list = input_output.load_json(path_of_file)
+    raw_data: dict = input_output.load_json(path_of_file)
     for data in raw_data:
         clean_raw_data(data)
         if data.get("format_info") is not None:
@@ -97,5 +121,5 @@ if __name__ == "__main__":
                 "percentage": percentage,
                 "count": total_aparations_in_meta,
             }
-        data["sections"] = clean_sections(data.get("sections"))
+        data["sections"] = clean_sections(data.get("sections"), format)
         export_data(data, format)

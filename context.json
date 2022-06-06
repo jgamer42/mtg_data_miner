@@ -26,7 +26,8 @@
         "Lands",
         "Enchantments",
         "Creatures",
-        "Planeswalkers"
+        "Planeswalkers",
+        "companion"
     ],
     "basicLands": [
         "swamp",
@@ -40,5 +41,64 @@
         "modern",
         "pioneer",
         "pauper"
+    ],
+    "colors": {
+        "1":{
+            "B":"black",
+            "U":"blue",
+            "R":"red",
+            "G":"green",
+            "W":"white"
+        },
+        "2": {
+            "WU": "azorius",
+            "BU": "dimir",
+            "BR": "rakdos",
+            "RG": "gruul",
+            "GW": "selesnya",
+            "WB": "orzhov",
+            "UR": "izzet",
+            "BG": "golgari",
+            "RW": "boros",
+            "GU": "simic"
+        },
+        "3": {
+            "WUB": "esper",
+            "UBR": "grixis",
+            "BRG": "jund",
+            "RGW": "naya",
+            "GWU": "bant",
+            "WBG": "abzan",
+            "URW": "jeskai",
+            "BGU": "sultai",
+            "RWB": "mardu",
+            "GUR": "temur"
+        },
+        "4": {
+            "WUBR": "yori-tiller",
+            "UBRG": "glint-eye",
+            "BRGW": "dune-brood",
+            "RGWB": "ink-treader",
+            "GWUB": "witch-maw"
+        }
+    },
+    "strategies": [
+        "control",
+        "stax",
+        "voltron",
+        "pod",
+        "tribal",
+        "aggro",
+        "midrange",
+        "superfriends",
+        "weenie",
+        "burn",
+        "combo",
+        "sacrifice",
+        "cycling",
+        "storm",
+        "ramp",
+        "cycle",
+        "blink"
     ]
 }
