@@ -154,6 +154,8 @@ if __name__ == "__main__":
             else None,
             "strategy": deck.get("strategy") or get_deck_strategie(deck.get("name")),
             "date": date,
+            "link": deck.get("link"),
+            "source": source,
         }
         cards: list = clean.dict_list_2_list(deck["sections"])
         data_to_export.update(rarity_of_cards(cards))

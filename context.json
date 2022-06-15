@@ -98,7 +98,9 @@
         "cycling",
         "storm",
         "ramp",
-        "cycle",
-        "blink"
+        "blink",
+        "tempo",
+        "sacrifice",
+        "reanimator"
     ]
 }

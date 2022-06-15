@@ -52,6 +52,7 @@ class GoldFishSpiderDecks(scrapy.Spider):
             "format_info": meta_info,
             "sections": {},
             "price": "",
+            "link": response.url,
         }
         for i in range(len(headers) - 1):
             aux = headers[i]
@@ -86,7 +87,6 @@ class GoldFishSpiderDecks(scrapy.Spider):
             "cuantity": cuantity[0],
             "rarity": rarity[0],
             "mana_cost": mana_cost,
-            "price": "",
         }
 
         return card_dict
