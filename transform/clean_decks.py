@@ -33,16 +33,16 @@ def total_counts_in_metagame(raw_text: str) -> str:
 def clean_section_name(raw_text: str) -> str:
     aux = re.compile("(\([0-9]+\))(\+[0-9]? MDFCs)?")
     clean = aux.sub("", raw_text)
-    return clean.strip()
+    return clean.strip().lower()
 
 
-def export_data(data_to_export: dict, format: str = "") -> None:
+def export_data(data_to_export: dict, source: str, format: str) -> None:
     config_helper: configHelper = configHelper()
     data_market_path: str = config_helper.get_datamarket_path()
     date: str = datetime.now().strftime("%Y-%m-%d")
     deck_name: str = data_to_export["name"].replace(" ", "-")
     output_file: str = (
-        f"{data_market_path}/decks/goldfish_{format}_{deck_name}_{date}.json"
+        f"{data_market_path}/decks/{source}_{format}_{deck_name}_{date}.json"
     )
     input_output.export_json(output_file, data_to_export)
 
@@ -66,19 +66,28 @@ def clean_sections(section: dict, format: str) -> dict:
     return sections
 
 
-def clean_cards(noise_card: dict, format: str) -> dict:
+def define_type(types: list):
+    if len(types) > 1:
+        if "land" in types:
+            types.remove("land")
+    return types[0]
+
+
+def clean_cards(noise_card: dict, format: str, get_type: bool = False) -> dict:
     output: dict = {"name": noise_card["name"], "cuantity": noise_card["cuantity"]}
     context_helper: contextHelper = contextHelper()
     if output.get("name", "").lower() not in context_helper.get_basic_lands():
-        clean_rarity_data: list = re.findall(r"[0-9]?", noise_card.get("rarity", "1"))
+        clean_rarity_data: str = re.findall(r"[0-9]?", noise_card.get("rarity", "1"))[0]
         clean_rarity: str = (
-            noise_card["rarity"].replace(clean_rarity_data[0], "").replace(".", "")
+            noise_card["rarity"].replace(clean_rarity_data, "").replace(".", "")
         )
         aditional_fields: dict = mtg_api.get_card_info_by_name(
-            output["name"], True if not clean_rarity else False
+            output["name"], True if get_type or not clean_rarity else False, get_type
         )
         output["rarity"] = clean_rarity
         output.update(aditional_fields)
+        if get_type:
+            output["type"] = define_type(aditional_fields["type"])
         set_info: dict = search_real_set(output.get("re-prints", []), format)
         output.update(set_info)
     return output
@@ -106,10 +115,26 @@ def search_real_set(reprints: list, format: str) -> dict:
         return {"set_name": "Innistrad: Crimson Vow", "set": "VOW"}
 
 
+def build_section(cards: list, format: str) -> dict:
+    sections: dict = {}
+    cards = list(filter(filters.remove_basic_lands, cards))
+    for card in cards:
+        clean_card: dict = clean_cards(card, format, True)
+        card_type: str = clean_section_name(clean_card.get("type","")) + "s"
+        if card_type not in sections.keys():
+            sections[card_type] = [clean_card]
+        else:
+            sections[card_type].append(clean_card)
+    return sections
+
+
 if __name__ == "__main__":
     config_helper: configHelper = configHelper()
-    args: dict = config_helper.args_constraint()
+    args: dict = config_helper.args_constraint(
+        {"source": {"required": True, "help": "Specific website to filter"}}
+    )
     format: str = args.get("format", "")
+    source: str = args.get("source", "")
     path_of_file: str = config_helper.get_dataset_path() + f"/{format}.json"
     raw_data: dict = input_output.load_json(path_of_file)
     for data in raw_data:
@@ -121,5 +146,9 @@ if __name__ == "__main__":
                 "percentage": percentage,
                 "count": total_aparations_in_meta,
             }
-        data["sections"] = clean_sections(data.get("sections"), format)
-        export_data(data, format)
+        if "sections" in data.keys():
+            data["sections"] = clean_sections(data.get("sections"), format)
+        else:
+            data["sections"] = build_section(data["cards"], format)
+            del data["cards"]
+        export_data(data, source, format)

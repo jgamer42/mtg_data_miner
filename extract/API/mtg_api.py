@@ -12,7 +12,9 @@ from utils.context_helper import contextHelper
 from typing import *
 
 
-def get_card_info_by_name(card_name: str, return_rarity) -> dict:
+def get_card_info_by_name(
+    card_name: str, return_rarity: bool, return_type: bool = False
+) -> dict:
     config_helper: configHelper = configHelper()
     api_url: str = config_helper.get_mtg_api_card()
     all_card_info: Response = requests.get(f"{api_url}/cards?name={card_name}")
@@ -26,6 +28,8 @@ def get_card_info_by_name(card_name: str, return_rarity) -> dict:
     }
     if return_rarity:
         output["rarity"] = card_to_export["rarity"]
+    if return_type:
+        output["type"] = card_to_export["types"]
     clean_card_name: str = card_to_export["name"].replace(" ", "-").replace("//", "")
     data_market_path: str = config_helper.get_datamarket_path()
     input_output.export_json(

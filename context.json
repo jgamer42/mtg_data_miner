@@ -21,12 +21,12 @@
         "H1R"
     ],
     "cardMainTypes": [
-        "Spells",
-        "Artifacts",
-        "Lands",
-        "Enchantments",
-        "Creatures",
-        "Planeswalkers",
+        "spells",
+        "artifacts",
+        "lands",
+        "enchantments",
+        "creatures",
+        "planeswalkers",
         "companion"
     ],
     "basicLands": [
@@ -101,6 +101,9 @@
         "blink",
         "tempo",
         "sacrifice",
-        "reanimator"
+        "reanimator",
+        "affinity",
+        "devotion",
+        "aristocrats"
     ]
 }
