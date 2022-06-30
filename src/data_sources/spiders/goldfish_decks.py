@@ -1,24 +1,27 @@
-import sys
 import scrapy
 from lxml import html, etree
 
-sys.path.append("../")
-from utils.context_helper import contextHelper
-
 
 class GoldFishSpiderDecks(scrapy.Spider):
+    """
+    Spider used to retrieve data from mtg goldfish decks sections
+    """
+
     name: str = "goldfish_decks"
     custom_settings: dict = {"ROBOTSTXT_OBEY": True, "CONCURRENT_REQUESTS": 100}
 
     def __init__(self, format: str, *args, **kwargs):
-        context_heler: contextHelper = contextHelper()
-        if format in context_heler.get_allowed_formats():
-            super(GoldFishSpiderDecks, self).__init__(*args, **kwargs)
-            self.start_urls: list = [f"https://www.mtggoldfish.com/metagame/{format}"]
-        else:
-            return None
+        """
+        Constructor of the object
+        :param format: Is a str with the format to scrape
+        """
+        super(GoldFishSpiderDecks, self).__init__(*args, **kwargs)
+        self.start_urls: list = [f"https://www.mtggoldfish.com/metagame/{format}"]
 
     def parse(self, response):
+        """
+        Start of the scraper
+        """
         format: str = response._get_url().split("/")[-1]
         decks: list = response.xpath(
             "//div[@class='archetype-tile-title']/span[@class='deck-price-paper']/a/@href"
@@ -41,6 +44,13 @@ class GoldFishSpiderDecks(scrapy.Spider):
                 )
 
     def deck_section(self, response, format: str, meta_info=None):
+        """
+        Function used to retrieve information from a deck section
+        :param response: Response object with the information from the page
+        :param format: Is a str with the format to scrape
+        :param meta_info: A dict with metagame percentage if available
+        :return deck: A dict with the raw deck information
+        """
         title: str = response.xpath("//h1[@class='title']/text()").get()
         row_table: str = response.xpath("//div[@id='tab-arena']/div/table").get()
         row_table_loaded = html.fromstring(row_table)
@@ -70,6 +80,11 @@ class GoldFishSpiderDecks(scrapy.Spider):
         return deck
 
     def card_section(self, raw_card: str):
+        """
+        Function used to retrieve information from a specific card
+        :param raw_card: Str with the html from the card
+        :return card: A dict with the raw deck information
+        """
         loaded_card = html.fromstring(raw_card)
 
         name: str = loaded_card.xpath("//a/text()")

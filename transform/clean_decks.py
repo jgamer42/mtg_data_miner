@@ -4,7 +4,7 @@ sys.path.append("../")
 import re
 from datetime import datetime
 from utils import clean, input_output, filters
-from extract.API import mtg_api
+from data_sources.API import mtg_api
 from utils.config_helper import configHelper
 from utils.context_helper import contextHelper
 

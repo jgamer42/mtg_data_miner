@@ -1,9 +1,6 @@
-import sys
+
 import scrapy
 from lxml import html
-
-sys.path.append("..")
-from utils.context_helper import contextHelper
 
 
 class MtgTop8DecksEvents(scrapy.Spider):
@@ -20,15 +17,10 @@ class MtgTop8DecksEvents(scrapy.Spider):
     base_url: str = "https://mtgtop8.com"
 
     def __init__(self, format: str, *args, **kwargs):
-        context_heler: contextHelper = contextHelper()
-        if format in context_heler.get_allowed_formats():
-            super(MtgTop8DecksEvents, self).__init__(*args, **kwargs)
-            normalized_format: str = self.formats_helper.get(format)
-            self.format = format
-            self.start_urls: list = [f"{self.base_url}/format?f={normalized_format}"]
-        else:
-            return None
-
+        super(MtgTop8DecksEvents, self).__init__(*args, **kwargs)
+        normalized_format: str = self.formats_helper.get(format)
+        self.format = format
+        self.start_urls: list = [f"{self.base_url}/format?f={normalized_format}"]
     def parse(self, response):
         tournaments: list = list(
             set(response.xpath("//td[@width='70%']/a/@href").getall())

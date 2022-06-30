@@ -4,7 +4,7 @@ import sys
 sys.path.append("../")
 from utils.context_helper import contextHelper
 from utils import clean
-from extract.API import mtg_api
+from data_sources.API import mtg_api
 
 
 class MtgWtf(scrapy.Spider):
