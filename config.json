@@ -1,6 +1,0 @@
-{
-    "DatasetPath":"data",
-    "DataMarketPath":"data/market",
-    "ContextPath":"data/context",
-    "mtgApi_card":"https://api.magicthegathering.io/v1"
-}

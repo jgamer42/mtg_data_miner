@@ -5,8 +5,8 @@ import re
 from datetime import datetime
 from utils import clean, input_output, filters
 from data_sources.API import mtg_api
-from utils.config_helper import configHelper
-from utils.context_helper import contextHelper
+from helpers.config_helper import configHelper
+from helpers.context_helper import contextHelper
 
 
 def clean_raw_data(data: dict) -> None:

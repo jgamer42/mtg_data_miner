@@ -8,7 +8,7 @@ import os
 sys.path.append("/".join(os.path.abspath(__file__).split("/")[0:4]))
 from extract.scraped_websites.spiders.goldfish_decks import GoldFishSpiderDecks
 from scrapy.crawler import CrawlerProcess
-from utils.config_helper import configHelper
+from helpers.config_helper import configHelper
 
 
 def create_dag(format: str):

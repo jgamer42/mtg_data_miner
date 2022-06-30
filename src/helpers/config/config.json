@@ -1,0 +1,7 @@
+{
+    "DatasetPath":"data",
+    "DefaultParams":[
+        {"name":"format","required":"True","help":"The format to retrieve information"},
+        {"name":"source","required":"True","help":"The source of the information"}
+    ]
+}

@@ -2,7 +2,7 @@ import scrapy
 import sys
 
 sys.path.append("../")
-from utils.context_helper import contextHelper
+from helpers.context_helper import contextHelper
 from utils import clean
 from data_sources.API import mtg_api
 
