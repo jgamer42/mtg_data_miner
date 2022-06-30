@@ -1,9 +1,12 @@
-
 import scrapy
 from lxml import html
 
 
 class MtgTop8DecksEvents(scrapy.Spider):
+    """
+    Spider used to retrieve data from mtg top 8 decks tournaments information
+    """
+
     name: str = "mtg_top8_decks_events"
     custom_settings: dict = {"ROBOTSTXT_OBEY": False, "CONCURRENT_REQUESTS": 100}
     formats_helper: dict = {
@@ -17,11 +20,19 @@ class MtgTop8DecksEvents(scrapy.Spider):
     base_url: str = "https://mtgtop8.com"
 
     def __init__(self, format: str, *args, **kwargs):
+        """
+        Constructor of the object
+        :param format: Is a str with the format to scrape
+        """
         super(MtgTop8DecksEvents, self).__init__(*args, **kwargs)
         normalized_format: str = self.formats_helper.get(format)
         self.format = format
         self.start_urls: list = [f"{self.base_url}/format?f={normalized_format}"]
+
     def parse(self, response):
+        """
+        Start of the scraper
+        """
         tournaments: list = list(
             set(response.xpath("//td[@width='70%']/a/@href").getall())
         )
@@ -31,6 +42,11 @@ class MtgTop8DecksEvents(scrapy.Spider):
             yield response.follow(url=tournament_url, callback=self.tournaments)
 
     def tournaments(self, response):
+        """
+        Function to retrieve a list of tournaments links
+        :param response: Response object with the page information
+        :return: A generator with the decks information
+        """
         decks: list = response.xpath(
             "//div[@id='top8_list']/div/div/div/div/a"
         ).getall()
@@ -52,7 +68,12 @@ class MtgTop8DecksEvents(scrapy.Spider):
                 continue
 
     def decks(self, response, deck_name: str):
-
+        """
+        Function to retrieve the decks information
+        :param response: Response object with the page information
+        :param deck_name: A str with the name of the deck
+        :return deck: dict with the deck information
+        """
         deck = {
             "name": deck_name,
             "link": response.url,
@@ -68,6 +89,11 @@ class MtgTop8DecksEvents(scrapy.Spider):
         return deck
 
     def process_card(self, raw_card: str):
+        """
+        Function to retrieve card information
+        :param raw_card: A str with the raw html with the card information
+        :return card: dict with the card information
+        """
         loaded_card = html.fromstring(raw_card)
         card_name: str = loaded_card.xpath("//span/text()")[0]
         cuantity: str = loaded_card.xpath("//div/text()")[0]
