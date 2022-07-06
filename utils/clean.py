@@ -9,7 +9,7 @@ def clean_list(data: list) -> None:
                 element = element.replace("\n", "").strip()
                 element = element.replace("\xa0", "").strip()
         except:
-            continue
+            print("no hay datos")
 
 
 def clean_dict(data: dict) -> None:

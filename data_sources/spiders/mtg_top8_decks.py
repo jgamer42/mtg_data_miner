@@ -27,7 +27,7 @@ class MtgTop8DecksEvents(scrapy.Spider):
         :param format: Is a str with the format to scrape
         """
         super(MtgTop8DecksEvents, self).__init__(*args, **kwargs)
-        normalized_format: str = self.formats_helper.get(format)
+        normalized_format: str = self.formats_helper.get(format,"")
         self.format = format
         self.start_urls: list = [f"{self.base_url}/format?f={normalized_format}"]
 
@@ -67,7 +67,7 @@ class MtgTop8DecksEvents(scrapy.Spider):
                         cb_kwargs={"deck_name": deck_name},
                     )
             except Exception as e:
-                continue
+                print("wops something wrong")
 
     def decks(self, response, deck_name: str):
         """
@@ -77,6 +77,7 @@ class MtgTop8DecksEvents(scrapy.Spider):
         :return deck: dict with the deck information
         """
         deck = {
+            "source":self.name,
             "name": deck_name,
             "link": response.url,
             "format": self.format,

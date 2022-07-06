@@ -57,6 +57,7 @@ class GoldFishDecks(scrapy.Spider):
         headers = row_table_loaded.xpath("//tr[@class='deck-category-header']")
         cards = row_table_loaded.xpath("//tr")
         deck: dict = {
+            "source":self.name,
             "name": title,
             "format": format,
             "format_info": meta_info,
