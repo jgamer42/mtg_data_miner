@@ -28,3 +28,7 @@ class Domain:
         "forest",
         "island"
     )
+    allowed_sets:tuple = (
+        "core","expansion","draft_innovation","commander"
+    )
+
