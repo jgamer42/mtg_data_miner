@@ -1,26 +1,30 @@
-def clean_list(data: list) -> None:
-    for element in data:
-        try:
-            if type(element) == dict:
-                clean_dict(element)
-            elif type(element) == list:
-                clean_list(element)
-            elif type(element) == str:
-                element = element.replace("\n", "").strip()
-                element = element.replace("\xa0", "").strip()
-        except:
-            print("no hay datos")
+import re
+import copy
 
 
-def clean_dict(data: dict) -> None:
-    for key in data.keys():
-        if type(data[key]) == dict:
-            clean_dict(data[key])
-        elif type(data[key]) == list:
-            clean_list(data[key])
-        elif type(data[key]) == str:
-            data[key] = data[key].replace("\n", "").strip()
-            data[key] = data[key].replace("\xa0", "").strip()
+def clean_list(data: list) -> list:
+    raw_data = copy.deepcopy(data)
+    cleaned_data = []
+    for element in raw_data:   
+        if type(element) == dict:
+            aux = clean_dict(element)
+        elif type(element) == list:
+            aux = clean_list(element)
+        elif type(element) == str:
+            aux = element.replace("\n", "").replace("\xa0", "").strip()
+        cleaned_data.append(aux)
+    return cleaned_data
+
+def clean_dict(data: dict) -> dict:
+    output = copy.deepcopy(data)
+    for key in output.keys():
+        if type(output[key]) == dict:
+            output[key] = clean_dict(output[key])
+        elif type(output[key]) == list:
+            output[key] = clean_list(output[key])
+        elif type(output[key]) == str:
+            output[key] = output[key].replace("\n", "").replace("\xa0", "").strip()
+    return output
 
 
 def dict_list_2_list(data: dict) -> list:
@@ -32,3 +36,10 @@ def dict_list_2_list(data: dict) -> list:
 
 def normalize_string(string_to_clean: str) -> str:
     return string_to_clean.strip().lower()
+
+def clean_str(string_to_clean:str)->str:
+    noise = re.findall(r"[\(\d\)]|\+| MDFCs",string_to_clean)
+    aux = string_to_clean
+    for n in noise:
+        aux = aux.replace(n,"")
+    return normalize_string(aux)

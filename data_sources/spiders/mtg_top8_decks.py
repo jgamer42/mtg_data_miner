@@ -101,8 +101,8 @@ class MtgTop8DecksEvents(scrapy.Spider):
         card_name: str = loaded_card.xpath("//span/text()")[0]
         cuantity: str = loaded_card.xpath("//div/text()")[0]
         card: dict = {
-            "name": card_name,
-            "cuantity": cuantity,
+            "name": str(card_name),
+            "cuantity": str(cuantity),
             "rarity": "",
             "mana_cost": "",
         }

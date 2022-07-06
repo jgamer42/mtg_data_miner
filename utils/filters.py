@@ -1,7 +1,5 @@
-from helpers.context_helper import contextHelper
-
-
+import helpers
 def remove_basic_lands(card: dict) -> bool:
-    context_helper: contextHelper = contextHelper()
-    cards_to_avoid: list = context_helper.get_basic_lands()
+    domain_helper: helpers.Domain = helpers.Domain()
+    cards_to_avoid: list = domain_helper.basic_lands
     return card.get("name", "").lower() not in cards_to_avoid
