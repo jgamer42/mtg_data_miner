@@ -2,7 +2,7 @@ import scrapy
 from lxml import html, etree
 
 
-class GoldFishSpiderDecks(scrapy.Spider):
+class GoldFishDecks(scrapy.Spider):
     """
     Spider used to retrieve data from mtg goldfish decks sections
     """
@@ -15,7 +15,7 @@ class GoldFishSpiderDecks(scrapy.Spider):
         Constructor of the object
         :param format: Is a str with the format to scrape
         """
-        super(GoldFishSpiderDecks, self).__init__(*args, **kwargs)
+        super(GoldFishDecks, self).__init__(*args, **kwargs)
         self.start_urls: list = [f"https://www.mtggoldfish.com/metagame/{format}"]
 
     def parse(self, response):

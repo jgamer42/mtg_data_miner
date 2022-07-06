@@ -15,7 +15,7 @@ class MtgTop8DecksEvents(scrapy.Spider):
         "modern": "MO",
         "pauper": "PAU",
         "legacy": "LE",
-        "vintage": "VI"
+        "vintage": "VI",
     }
     memory: list = []
     aux = ""
