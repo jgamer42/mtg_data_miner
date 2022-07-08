@@ -1,8 +1,10 @@
+from requests import RequestException
 import helpers
 import requests
 from operator import itemgetter
 from requests.models import Response
 from utils.filters import allowed_sets
+from observability.execution_time import check_execution_time
 
 
 class Scryfall:
@@ -13,14 +15,18 @@ class Scryfall:
     def __init__(self):
         self.base_url: str = "https://api.scryfall.com"
         self.domain_helper: helpers.Domain = helpers.Domain()
+        self.session: requests.Session = requests.Session()
 
+    @check_execution_time
     def get_card_info_by_name(self, card_name: str) -> dict:
         """
         Method used to get detailed card information
         :param card_name: Str with the name of the card to find
         :return output: dict with the card information
         """
-        data: Response = requests.get(f"{self.base_url}/cards/named?fuzzy={card_name}")
+        data: Response = self.session.get(
+            f"{self.base_url}/cards/named?fuzzy={card_name}"
+        )
         if data.status_code != 200:
             raise Exception("Card not found try again")
         return data.json()
@@ -30,7 +36,7 @@ class Scryfall:
         Method used to get detailed set information
         :return output: a list sorted by release date with the sets information
         """
-        data: Response = requests.get(f"{self.base_url}/sets")
+        data: Response = self.session.get(f"{self.base_url}/sets")
         procesed_data: dict = data.json().get("data", [])
         if data.status_code != 200:
             raise Exception("Card not found try again")

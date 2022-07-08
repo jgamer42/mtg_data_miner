@@ -1,9 +1,13 @@
+from black import out
 import helpers
 from scrapy import signals
 from data_sources import spiders
 from observability.execution_time import check_execution_time
 from scrapy.crawler import CrawlerProcess, Crawler
 from src.deck.deck_controller import Deck
+import json
+import os
+import random
 
 
 class Format(object):
@@ -24,9 +28,15 @@ class Format(object):
         Method used as a trigger when a spiders gets an item
         :param item: A dict with the scrapped raw data information
         """
-        self.decks.append(Deck(item))
+        # self.decks.append(Deck(item)
+        output = f"{item.get('source')}_{item.get('name')}.json"
+        if os.path.exists(output):
+            output = f"{item.get('source')}_{item.get('name').strip()}_{random.randint(0,100)}.json"
+        file = open(output, "w+")
+        json.dump(item, file)
+        file.close()
 
-    # @check_execution_time
+    @check_execution_time
     def get_spiders_data(self) -> None:
         """
         Method used to get the data from the spiders allowed
@@ -39,3 +49,8 @@ class Format(object):
             )
             process.crawl(crawler, format=self.name)
         process.start()
+
+    def build_report(self):
+        data: list = []
+        for deck in self.decks:
+            data.append(deck.get_info())

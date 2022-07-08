@@ -12,10 +12,56 @@ class Deck(object):
     """
 
     def __init__(self, raw_data: dict):
+        self.attributes = ["source", "name", "link", "format", "format_info"]
+        for key in raw_data:
+            if key in self.attributes:
+                setattr(self, key, raw_data.get(key, None))
         self.raw_data: dict = raw_data
         self.domain_helper: helpers.Domain = helpers.Domain()
+        self.get_deck_strategy()
         builder: SectionsBuilder = SectionsBuilder(self.raw_data)
         self.sections: list = builder.build()
+
+    def __dict__(self) -> dict:
+        output: dict = {}
+        for attribute in self.attributes:
+            output[attribute] = getattr(self, attribute)
+
+    # @check_execution_time
+    def get_deck_strategy(self):
+        """
+        Method used to determine which strategy could have a deck
+        """
+        for strategy in self.domain_helper.strategies:
+            if strategy in self.name:
+                self.strategy: str = strategy
+                break
+
+    def get_info(self):
+        basic_data: dict = dict(self)
+        sections_data: dict = self.get_sections_data()
+
+    def get_sections_data(self):
+        for section in self.sections:
+            pass
+
+    def get_domain_collection(self) -> str:
+        pass
+
+    def get_domain_color(self) -> str:
+        pass
+
+    def get_reserved_cards_list(self) -> int:
+        pass
+
+    def get_prices(self) -> int:
+        pass
+
+    def get_rarity(self) -> int:
+        pass
+
+    def get_mana_wave(self) -> int:
+        pass
 
 
 class Section(object):
@@ -32,7 +78,6 @@ class Section(object):
         self.name: str = name
         self.build()
 
-    @check_execution_time
     def build(self):
         """
         This method is used to build a specific section
@@ -43,17 +88,39 @@ class Section(object):
                 self.cards_cuantity[str(new_card)] = card.get("cuantity")
                 self.cards.append(new_card)
             elif type(card) == tuple:
-                self.cards_cuantity[str(card)] = card[1]
+                self.cards_cuantity[str(card[0])] = card[1]
                 self.cards.append(card[0])
             else:
                 raise Exception("format to build sections not allowed")
 
-    def get_cards(self) -> list:
-        """
-        this methods is used to retrieve the cards from a section
-        :return self.cards: a list with the cards in the section
-        """
-        return self.cards
+    def get_info(self, format):
+        output: dict = {
+            f"{self.name}_cards": len(self.cards),
+            f"{self.name}_collection": self.get_domain_collection(format),
+            f"{self.name}_color": self.get_domain_color(),
+            f"{self.name}_reserved_cards": self.get_reserved_cards_list(),
+        }
+        output.update(self.get_prices())
+        output.update(self.get_rarity())
+        output.update(self.get_mana_wave())
+
+    def get_domain_collection(self, format) -> str:
+        pass
+
+    def get_domain_color(self) -> str:
+        pass
+
+    def get_reserved_cards_list(self) -> int:
+        pass
+
+    def get_prices(self) -> int:
+        pass
+
+    def get_rarity(self) -> int:
+        pass
+
+    def get_mana_wave(self) -> int:
+        pass
 
 
 class SectionsBuilder:
@@ -67,10 +134,11 @@ class SectionsBuilder:
         self.domain_helper: helpers.Domain = helpers.Domain()
         self.sections: list = []
 
-    def build(self):
+    def build(self) -> list:
         """
         This is the method with the objective of
         create the sections
+        :return self.sections: a list with created sections
         """
         if "cards" in self.raw_cards.keys():
             self.build_from_cards_list()
@@ -80,6 +148,7 @@ class SectionsBuilder:
             raise Exception("format for build sections not allowed ")
         return self.sections
 
+    @check_execution_time
     def build_from_cards_list(self):
         """
         This methods build the sections when the raw_data
@@ -88,14 +157,17 @@ class SectionsBuilder:
         types: dict = {}
         raw_cards = list(filter(remove_basic_lands, self.raw_cards.get("cards")))
         for raw_card in raw_cards:
-            clean_card: Card = Card(raw_card)
-            card_type: str = normalize_str(clean_card.get_type())
+            clean_card: Card = (Card(raw_card), raw_card.get("cuantity"))
+            card_type: str = normalize_str(clean_card[0].get_type())
             if card_type in types.keys():
                 types[card_type].append(clean_card)
             else:
                 types[card_type]: list = [clean_card]
+        for type in types.keys():
+            new_section: Section = Section(types[type], type)
+            self.sections.append(new_section)
 
-    # @check_execution_time
+    @check_execution_time
     def build_from_defined(self):
         """
         Method used to build deck information when the

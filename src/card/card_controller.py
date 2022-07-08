@@ -1,6 +1,4 @@
 import sys
-
-from black import out
 import helpers
 
 sys.path.append("/home/user/Escritorio/code/mtg_data_miner")
@@ -31,12 +29,25 @@ class Card(metaclass=Singelton):
         self.name: str = card_information.get("name", "")
         self.scryfall: API.Scryfall = API.Scryfall()
         self.mtg_api: API.MtgApi = API.MtgApi()
+        self.clean_attributes = [
+            "printings",
+            "cmc",
+            "power",
+            "thoughness",
+            "colors",
+            "color_identity",
+            "reserved",
+            "prices",
+            "edhrec_rank",
+            "penny_rank",
+            "rarity",
+        ]
         self.get_info()
 
     def __str__(self):
         return self.name
 
-    # @check_execution_time
+    @check_execution_time
     def get_info(self):
         """
         Method used to load card information, it could come from API or from a manager
@@ -46,23 +57,15 @@ class Card(metaclass=Singelton):
         if data == {}:
             aditional_data: dict = self.scryfall.get_card_info_by_name(self.name)
             try:
+                more_data: dict = self.mtg_api.get_card_info_by_name(self.name)
+            except:
                 card_id: int = aditional_data["multiverse_ids"][0]
                 more_data: dict = self.mtg_api.get_card_info_by_id(card_id)
-            except:
-                more_data: dict = self.mtg_api.get_card_info_by_name(self.name)
             data.update(more_data)
             data.update(aditional_data)
-        self.reprints: list = data.get("printings")
-        self.mana_cost: str = data.get("cmc")
-        self.power: str = data.get("power", None)
-        self.thoughness: str = data.get("thoughness", None)
-        self.colors: list = data.get("colors", None)
-        self.colors_identity: list = data.get("corlor_identity")
-        self.reserved: bool = data.get("reserved")
-        self.prices: dict = data.get("prices")
-        self.edhrec_rank: str = data.get("edhrec_rank")
-        self.penny_rank: str = data.get("penny_rank")
-        self.rarity: str = data.get("rarity")
+        for key in data:
+            if key in self.clean_attributes:
+                setattr(self, key, data.get(key, None))
         self.type: list = [normalize_str(t) for t in data.get("types")]
         self.raw_data: dict = data
 
@@ -76,24 +79,24 @@ class Card(metaclass=Singelton):
     def first_print_in_format(self, format: str) -> str:
         pass
 
+    # @check_execution_time
     def get_type(self) -> str:
         """
         Methodo used to get a specific type for a card
         :return str: A string with the specific type of the card
         """
         output: str = ""
-        if len(self.type) == 1:
+        if "creature" in self.type:
+            output = "creature"
+        elif "land" in self.type:
+            output = "land"
+        elif "sorcery" in self.type or "instant" in self.type:
+            output = "spell"
+        elif len(self.type) == 1:
             output = self.type[0]
         else:
-            if "creature" in self.type:
-                output = "creature"
-            elif "land" in self.type:
-                output = "land"
-            elif "sorcery" in self.type or "instant" in self.type:
-                output = "spell"
-            else:
-                for type in self.type:
-                    if type in self.domain_helper.allowed_sections:
-                        output = type
-                        break
+            for type in self.type:
+                if type in self.domain_helper.allowed_sections:
+                    output = type
+                    break
         return output

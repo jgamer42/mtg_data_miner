@@ -20,3 +20,22 @@ class Domain:
 
     basic_lands: tuple = ("plains", "swamp", "mountain", "forest", "island")
     allowed_sets: tuple = ("core", "expansion", "draft_innovation", "commander")
+    strategies: tuple = (
+        "voltron",
+        "sacrifice",
+        "reanimator",
+        "combo",
+        "aggro",
+        "ramp",
+        "control",
+        "stax",
+        "tax",
+        "tribal",
+        "burn",
+        "pod",
+        "affinity",
+        "tempo",
+        "weenie",
+        "storm",
+        "cycling",
+    )
