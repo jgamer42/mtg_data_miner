@@ -1,6 +1,3 @@
-from dataclasses import dataclass
-
-
 class Domain:
     allowed_formats: tuple = (
         "vintage",
@@ -20,15 +17,6 @@ class Domain:
         "spells",
         "creatures",
     )
-    
-    basic_lands:tuple = (
-        "plains",
-        "swamp",
-        "mountain",
-        "forest",
-        "island"
-    )
-    allowed_sets:tuple = (
-        "core","expansion","draft_innovation","commander"
-    )
 
+    basic_lands: tuple = ("plains", "swamp", "mountain", "forest", "island")
+    allowed_sets: tuple = ("core", "expansion", "draft_innovation", "commander")

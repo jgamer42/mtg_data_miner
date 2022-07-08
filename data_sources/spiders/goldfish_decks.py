@@ -8,7 +8,7 @@ class GoldFishDecks(scrapy.Spider):
     """
 
     name: str = "goldfish_decks"
-    custom_settings: dict = {"ROBOTSTXT_OBEY": True, "CONCURRENT_REQUESTS": 100}
+    custom_settings: dict = {"ROBOTSTXT_OBEY": True, "CONCURRENT_REQUESTS": 1000}
 
     def __init__(self, format: str, *args, **kwargs):
         """
@@ -57,7 +57,7 @@ class GoldFishDecks(scrapy.Spider):
         headers = row_table_loaded.xpath("//tr[@class='deck-category-header']")
         cards = row_table_loaded.xpath("//tr")
         deck: dict = {
-            "source":self.name,
+            "source": self.name,
             "name": title,
             "format": format,
             "format_info": meta_info,

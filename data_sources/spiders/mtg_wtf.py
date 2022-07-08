@@ -20,8 +20,8 @@ class MtgWtf(scrapy.Spider):
         if self.format == "pauper":
             yield {}
         else:
-            output:list = []
+            output: list = []
             scraped_sets: list = response.xpath(self.xpath).getall()
             for scraped_set in scraped_sets:
                 output.append(scraped_set)
-            yield {"data":output,"format":self.format}
+            yield {"data": output, "format": self.format}
