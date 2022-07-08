@@ -29,6 +29,8 @@ class Card(metaclass=Singelton):
         self.name: str = card_information.get("name", "")
         self.scryfall: API.Scryfall = API.Scryfall()
         self.mtg_api: API.MtgApi = API.MtgApi()
+        self.colors: list = []
+        self.color_identity: list = []
         self.clean_attributes = [
             "printings",
             "cmc",
@@ -85,6 +87,25 @@ class Card(metaclass=Singelton):
         :return dict: a dict with the raw card information
         """
         return self.raw_data if hasattr(self, "raw_data") else {}
+
+    def get_color(self) -> str:
+        """
+        Method used to define the color of a card Ie :Rakdos ,Gruul, Green
+        :return color: A str with the color of the card
+        """
+        color: str = ""
+        if hasattr(self, "colors") and self.colors != []:
+            self.colors.sort()
+            color = self.domain_helper.colors_map.get("".join(self.colors), "colorless")
+        else:
+            if self.color_identity != []:
+                self.color_identity.sort()
+                color = self.domain_helper.colors_map.get(
+                    "".join(self.color_identity), "colorless"
+                )
+            else:
+                color = "colorless"
+        return color
 
     def first_print_in_format(self, format: str) -> str:
         pass

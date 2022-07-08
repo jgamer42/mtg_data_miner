@@ -3,7 +3,6 @@ from utils.clean import clean_str, clean_list, normalize_str
 from utils.filters import remove_basic_lands
 from src.card.card_controller import Card
 from observability.execution_time import check_execution_time
-from typing import Union
 
 
 class Deck(object):
@@ -12,7 +11,9 @@ class Deck(object):
     """
 
     def __init__(self, raw_data: dict):
-        self.attributes = ["source", "name", "link", "format", "format_info"]
+        self.attributes: list = ["source", "name", "link", "format", "format_info"]
+        self.name: str = ""
+        self.format: str = ""
         for key in raw_data:
             if key in self.attributes:
                 setattr(self, key, raw_data.get(key, None))
@@ -112,10 +113,15 @@ class Section(object):
                 output[f"{self.name}_{card.rarity}"] += card_cuantity
             else:
                 output[f"{self.name}_{card.rarity}"] = card_cuantity
-
+            color: str = card.get_color()
+            if color in colors.keys():
+                colors[color] += card_cuantity
+            else:
+                colors[color] = card_cuantity
         output.update(
             {
                 f"{self.name}_cards": cards_count,
+                f"{self.name}_domain_color": max(colors, key=lambda x: colors[x])
                 # f"{self.name}_collection": self.get_domain_collection(format),
                 # f"{self.name}_color": self.get_domain_color(),
                 # f"{self.name}_reserved_cards": self.get_reserved_cards_list(),

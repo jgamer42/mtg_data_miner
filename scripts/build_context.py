@@ -13,7 +13,7 @@ logging.getLogger("scrapy").propagate = False
 logging.getLogger("filelock").propagate = False
 API: Scryfall = Scryfall()
 SETS: list = API.get_sets()
-CONTEXT = {
+CONTEXT: dict = {
     "vintage": SETS,
     "pauper": SETS,
     "legacy": SETS,
@@ -25,9 +25,9 @@ CONTEXT = {
 
 def handle_scrapped_item(item: dict) -> None:
     global CONTEXT, SETS
-    for data in item.get("data"):
+    for data in item.get("data", []):
         allowed_set = list(filter(lambda x: x.get("name") == data, SETS))
-        CONTEXT[item.get("format")].append(allowed_set)
+        CONTEXT.get(item.get("format", ""), []).append(allowed_set)
 
 
 process = CrawlerProcess()

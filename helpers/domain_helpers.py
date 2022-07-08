@@ -1,3 +1,6 @@
+from typing import Dict
+
+
 class Domain:
     allowed_formats: tuple = (
         "vintage",
@@ -39,3 +42,36 @@ class Domain:
         "storm",
         "cycling",
     )
+    colors_map: Dict[str, str] = {
+        "G": "Green",
+        "R": "Red",
+        "U": "Blue",
+        "W": "White",
+        "B": "Black",
+        "BU": "Dimir",
+        "UW": "Azorius",
+        "BR": "Rakdos",
+        "GR": "Gruul",
+        "GW": "Selesnya",
+        "BW": "Orzhov",
+        "RU": "Izzet",
+        "BG": "Golgari",
+        "RW": "Boros",
+        "GU": "Simic",
+        "BUW": "Esper",
+        "BUR": "Grixis",
+        "BGR": "Jund",
+        "RGW": "Naya",
+        "GUW": "Bant",
+        "BGW": "Abzan",
+        "RUW": "Jeskai",
+        "BGU": "Sultai",
+        "BRW": "Mardu",
+        "GRU": "Temur",
+        "BRUW": "Yore-Tiller",
+        "BGRU": "Glint-Eye",
+        "BGRW": "Dune-Brood",
+        "GRUW": "Ink-Treader",
+        "BGUW": "Witch-Maw",
+        "BGRUW": "5 color",
+    }

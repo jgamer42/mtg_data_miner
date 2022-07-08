@@ -1,10 +1,12 @@
 import re
 import copy
+from typing import Union
 
 
 def clean_list(data: list) -> list:
-    raw_data = copy.deepcopy(data)
-    cleaned_data = []
+    raw_data: list = copy.deepcopy(data)
+    cleaned_data: list = []
+    aux: Union[str, list, dict] = []
     for element in raw_data:
         if type(element) == dict:
             aux = clean_dict(element)
@@ -17,7 +19,7 @@ def clean_list(data: list) -> list:
 
 
 def clean_dict(data: dict) -> dict:
-    output = copy.deepcopy(data)
+    output: dict = copy.deepcopy(data)
     for key in output.keys():
         if type(output[key]) == dict:
             output[key] = clean_dict(output[key])
