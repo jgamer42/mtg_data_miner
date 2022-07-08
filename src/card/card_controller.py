@@ -56,11 +56,21 @@ class Card(metaclass=Singelton):
         data: dict = self.check_if_exists()
         if data == {}:
             aditional_data: dict = self.scryfall.get_card_info_by_name(self.name)
-            try:
-                more_data: dict = self.mtg_api.get_card_info_by_name(self.name)
-            except:
+            if "//" in self.name:
                 card_id: int = aditional_data["multiverse_ids"][0]
                 more_data: dict = self.mtg_api.get_card_info_by_id(card_id)
+            else:
+                try:
+                    more_data: dict = self.mtg_api.get_card_info_by_name(
+                        self.name,
+                        {
+                            "type": aditional_data.get("type_line"),
+                            "cmc": int(aditional_data.get("cmc")),
+                        },
+                    )
+                except:
+                    card_id: int = aditional_data["multiverse_ids"][0]
+                    more_data: dict = self.mtg_api.get_card_info_by_id(card_id)
             data.update(more_data)
             data.update(aditional_data)
         for key in data:

@@ -18,21 +18,24 @@ class MtgApi(object):
         self.session: requests.Session = requests.session()
 
     @check_execution_time
-    def get_card_info_by_name(self, card_name: str) -> dict:
+    def get_card_info_by_name(
+        self, card_name: str, additional_filters: dict = {}
+    ) -> dict:
         """
         Method used to get detailed card information
         :param card_name: Str with the name of the card to find
         :return output: dict with the card information
         """
+        filters: str = ""
+        if additional_filters:
+            for k in additional_filters.keys():
+                filters += f"&{k}={additional_filters[k]}"
         data: Response = self.session.get(
-            f"{self.base_url}/v{self.version}/cards?name={card_name}"
+            f"{self.base_url}/v{self.version}/cards?name={card_name}{filters}"
         )
         if data.status_code != 200:
             raise Exception("Card not found")
-        try:
-            return data.json()["cards"][0]
-        except IndexError:
-            return {}
+        return data.json()["cards"][0]
 
     @check_execution_time
     def get_card_info_by_id(self, card_id: str) -> dict:
@@ -46,8 +49,4 @@ class MtgApi(object):
         )
         if data.status_code != 200:
             raise Exception("Card not found")
-        try:
-            return data.json()["card"]
-        except:
-            print("algo salio mal con el id", card_id, data.status_code, data.json())
-            return {}
+        return data.json()["card"]

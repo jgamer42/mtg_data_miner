@@ -330,4 +330,6 @@ deck_2_raw = {
 }
 
 d1 = Deck(deck_1_raw)
+d1.get_info()
 d2 = Deck(deck_2_raw)
+d2.get_info()

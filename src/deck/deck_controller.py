@@ -22,10 +22,14 @@ class Deck(object):
         builder: SectionsBuilder = SectionsBuilder(self.raw_data)
         self.sections: list = builder.build()
 
-    def __dict__(self) -> dict:
+    def get_atributes(self) -> dict:
         output: dict = {}
         for attribute in self.attributes:
-            output[attribute] = getattr(self, attribute)
+            output[attribute] = getattr(self, attribute, None)
+        return output
+
+    def __str__(self) -> str:
+        return self.name
 
     # @check_execution_time
     def get_deck_strategy(self):
@@ -38,12 +42,15 @@ class Deck(object):
                 break
 
     def get_info(self):
-        basic_data: dict = dict(self)
+        basic_data: dict = self.get_atributes()
         sections_data: dict = self.get_sections_data()
+        print(sections_data)
 
-    def get_sections_data(self):
+    def get_sections_data(self) -> dict:
+        output: dict = {}
         for section in self.sections:
-            pass
+            output.update(section.get_info(self.format))
+        return output
 
     def get_domain_collection(self) -> str:
         pass
@@ -93,34 +100,40 @@ class Section(object):
             else:
                 raise Exception("format to build sections not allowed")
 
-    def get_info(self, format):
-        output: dict = {
-            f"{self.name}_cards": len(self.cards),
-            f"{self.name}_collection": self.get_domain_collection(format),
-            f"{self.name}_color": self.get_domain_color(),
-            f"{self.name}_reserved_cards": self.get_reserved_cards_list(),
-        }
-        output.update(self.get_prices())
-        output.update(self.get_rarity())
-        output.update(self.get_mana_wave())
+    @check_execution_time
+    def get_info(self, format) -> dict:
+        output: dict = {}
+        colors: dict = {}
+        cards_count: int = 0
+        for card in self.cards:
+            card_cuantity: int = int(self.cards_cuantity.get(str(card), 0))
+            cards_count += card_cuantity
+            if f"{self.name}_{card.rarity}" in output.keys():
+                output[f"{self.name}_{card.rarity}"] += card_cuantity
+            else:
+                output[f"{self.name}_{card.rarity}"] = card_cuantity
+
+        output.update(
+            {
+                f"{self.name}_cards": cards_count,
+                # f"{self.name}_collection": self.get_domain_collection(format),
+                # f"{self.name}_color": self.get_domain_color(),
+                # f"{self.name}_reserved_cards": self.get_reserved_cards_list(),
+            }
+        )
+        return output
 
     def get_domain_collection(self, format) -> str:
-        pass
+        return "coleccion"
 
     def get_domain_color(self) -> str:
-        pass
+        return "color"
 
     def get_reserved_cards_list(self) -> int:
-        pass
+        return 1
 
-    def get_prices(self) -> int:
-        pass
-
-    def get_rarity(self) -> int:
-        pass
-
-    def get_mana_wave(self) -> int:
-        pass
+    def get_total_cards(self) -> int:
+        return 1
 
 
 class SectionsBuilder:
@@ -129,8 +142,8 @@ class SectionsBuilder:
     of the sections of a deck
     """
 
-    def __init__(self, cards: Union[list, dict]):
-        self.raw_cards: Union[list, dict] = cards
+    def __init__(self, cards: dict):
+        self.raw_cards: dict = cards
         self.domain_helper: helpers.Domain = helpers.Domain()
         self.sections: list = []
 
@@ -155,7 +168,9 @@ class SectionsBuilder:
         does not has defined the sections
         """
         types: dict = {}
-        raw_cards = list(filter(remove_basic_lands, self.raw_cards.get("cards")))
+        raw_cards: list = list(
+            filter(remove_basic_lands, self.raw_cards.get("cards", []))
+        )
         for raw_card in raw_cards:
             clean_card: Card = (Card(raw_card), raw_card.get("cuantity"))
             card_type: str = normalize_str(clean_card[0].get_type())

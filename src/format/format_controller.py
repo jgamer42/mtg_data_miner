@@ -7,7 +7,7 @@ from scrapy.crawler import CrawlerProcess, Crawler
 from src.deck.deck_controller import Deck
 import json
 import os
-import random
+import uuid
 
 
 class Format(object):
@@ -31,7 +31,7 @@ class Format(object):
         # self.decks.append(Deck(item)
         output = f"{item.get('source')}_{item.get('name')}.json"
         if os.path.exists(output):
-            output = f"{item.get('source')}_{item.get('name').strip()}_{random.randint(0,100)}.json"
+            output = f"{item.get('source')}_{item.get('name','').strip()}_{uuid.uuid4()}.json"
         file = open(output, "w+")
         json.dump(item, file)
         file.close()
