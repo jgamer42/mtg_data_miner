@@ -41,9 +41,17 @@ for format in CONTEXT.keys():
     data = {}
     for set in CONTEXT[format]:
         if type(set) == list and set:
-            data[set[0]["code"].upper()] = set[0]["released_at"]
+            data[set[0]["code"].upper()] = {
+                "released": set[0]["released_at"],
+                "name": set[0]["name"],
+            }
         elif type(set) == dict:
-            data[set["code"].upper()] = set["released_at"]
-    with open(f"{format}.json", "w+") as file:
+            data[set["code"].upper()] = {
+                "released": set["released_at"],
+                "name": set["name"],
+            }
+    with open(
+        f"/home/user/Escritorio/code/mtg_data_miner/helpers/context/{format}.json", "w+"
+    ) as file:
         json.dump(data, file)
         file.close()

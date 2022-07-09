@@ -47,3 +47,15 @@ def clean_str(string_to_clean: str) -> str:
     for n in noise:
         aux = aux.replace(n, "")
     return normalize_str(aux)
+
+
+def normalize_dict(dict_to_normalize: dict) -> dict:
+    output: dict = copy.deepcopy(dict_to_normalize)
+    for element in output.keys():
+        if type(output[element]) == str:
+            output[element] = normalize_str(output[element])
+        if type(output[element]) == float:
+            output[element] = float("{:.3f}".format(output[element]))
+        if type(output[element]) == dict:
+            output[element] = normalize_dict(output[element])
+    return output

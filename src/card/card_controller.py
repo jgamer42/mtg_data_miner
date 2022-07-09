@@ -1,3 +1,4 @@
+from operator import itemgetter
 import sys
 import helpers
 
@@ -30,7 +31,14 @@ class Card(metaclass=Singelton):
         self.scryfall: API.Scryfall = API.Scryfall()
         self.mtg_api: API.MtgApi = API.MtgApi()
         self.colors: list = []
+        self.printings: list = []
         self.color_identity: list = []
+        self.cmc: float = 0.0
+        self.prices: dict = {}
+        self.reserved: bool = False
+        self.rarity: str = ""
+        self.edhrec_rank: int = 0
+        self.penny_rank: int = 0
         self.clean_attributes = [
             "printings",
             "cmc",
@@ -49,7 +57,6 @@ class Card(metaclass=Singelton):
     def __str__(self):
         return self.name
 
-    @check_execution_time
     def get_info(self):
         """
         Method used to load card information, it could come from API or from a manager
@@ -107,10 +114,22 @@ class Card(metaclass=Singelton):
                 color = "colorless"
         return color
 
-    def first_print_in_format(self, format: str) -> str:
-        pass
+    def first_set_in_format(self, format: str) -> str:
+        """
+        Method used to determine which was the first print of a card
+        in a given format
+        :param format: the name of the format to find Ie 'standard','modern'
+        :output str: the name of the first set where was printed a card
+        """
+        context_helper: helpers.Context = helpers.Context(format)
+        reprints: list = []
+        for set in self.printings:
+            posible_set: dict = context_helper.context_data.get(set, {})
+            if posible_set:
+                reprints.append(posible_set)
+        reprints.sort(key=itemgetter("released"))
+        return reprints[0].get("name")
 
-    # @check_execution_time
     def get_type(self) -> str:
         """
         Methodo used to get a specific type for a card
@@ -130,4 +149,26 @@ class Card(metaclass=Singelton):
                 if type in self.domain_helper.allowed_sections:
                     output = type
                     break
+        return output
+
+    def get_prices(self, cuantity: int) -> dict:
+        """
+        Method used to determine a possible card prices from his cuantity
+        :param cuantity: the numbers of copies of the card
+        :return output: a dict the prices in tix,usd,eur
+        """
+        usd: float = (
+            float(self.prices.get("usd", 0.0)) if self.prices.get("usd") else 0.0
+        )
+        eur: float = (
+            float(self.prices.get("eur", 0.0)) if self.prices.get("eur") else 0.0
+        )
+        tix: float = (
+            float(self.prices.get("tix", 0.0)) if self.prices.get("tix") else 0.0
+        )
+        output: dict = {
+            "usd": usd * cuantity,
+            "tix": eur * cuantity,
+            "eur": tix * cuantity,
+        }
         return output
