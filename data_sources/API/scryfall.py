@@ -1,10 +1,10 @@
-from requests import RequestException
 import helpers
-import requests
+import json
 from operator import itemgetter
-from requests.models import Response
 from utils.filters import allowed_sets
 from observability.execution_time import check_execution_time
+import urllib3
+from urllib3.response import HTTPResponse
 
 
 class Scryfall:
@@ -15,7 +15,7 @@ class Scryfall:
     def __init__(self):
         self.base_url: str = "https://api.scryfall.com"
         self.domain_helper: helpers.Domain = helpers.Domain()
-        self.session: requests.Session = requests.Session()
+        self.api = urllib3.PoolManager(num_pools=50, maxsize=100)
 
     @check_execution_time
     def get_card_info_by_name(self, card_name: str) -> dict:
@@ -24,21 +24,26 @@ class Scryfall:
         :param card_name: Str with the name of the card to find
         :return output: dict with the card information
         """
-        data: Response = self.session.get(
-            f"{self.base_url}/cards/named?fuzzy={card_name}"
+        data: HTTPResponse = self.api.request(
+            "GET",
+            f"{self.base_url}/cards/named?fuzzy={card_name}",
+            preload_content=False,
         )
-        if data.status_code != 200:
+        if data.status != 200:
             raise Exception("Card not found try again")
-        return data.json()
+        output = json.loads(data.data.decode("utf-8"))
+        return output
 
     def get_sets(self) -> list:
         """
         Method used to get detailed set information
         :return output: a list sorted by release date with the sets information
         """
-        data: Response = self.session.get(f"{self.base_url}/sets")
-        procesed_data: dict = data.json().get("data", [])
-        if data.status_code != 200:
+        data: HTTPResponse = self.api.request(
+            "GET", f"{self.base_url}/sets", preload_content=False
+        )
+        procesed_data: dict = json.loads(data.data.decode("utf-8"))
+        if data.status != 200:
             raise Exception("Card not found try again")
         output = list(filter(allowed_sets, procesed_data))
         output.sort(key=itemgetter("released_at"))

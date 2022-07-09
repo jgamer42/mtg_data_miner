@@ -1,10 +1,11 @@
 import sys
+import json
 
 sys.path.append("/home/user/Escritorio/code/mtg_data_miner")
-import requests
-from requests.models import Response
+
 from observability.execution_time import check_execution_time
-import logging
+import urllib3
+from urllib3.response import HTTPResponse
 
 
 class MtgApi(object):
@@ -15,7 +16,7 @@ class MtgApi(object):
     def __init__(self):
         self.base_url: str = "https://api.magicthegathering.io"
         self.version: int = 1
-        self.session: requests.Session = requests.session()
+        self.api = urllib3.PoolManager(num_pools=50, maxsize=100)
 
     @check_execution_time
     def get_card_info_by_name(
@@ -30,12 +31,15 @@ class MtgApi(object):
         if additional_filters:
             for k in additional_filters.keys():
                 filters += f"&{k}={additional_filters[k]}"
-        data: Response = self.session.get(
-            f"{self.base_url}/v{self.version}/cards?name={card_name}{filters}"
+        data: HTTPResponse = self.api.request(
+            "GET",
+            f"{self.base_url}/v{self.version}/cards?name={card_name}{filters}",
+            preload_content=False,
         )
-        if data.status_code != 200:
+        if data.status != 200:
             raise Exception("Card not found")
-        return data.json()["cards"][0]
+        output: dict = json.loads(data.data.decode("utf-8"))
+        return output["cards"][0]
 
     @check_execution_time
     def get_card_info_by_id(self, card_id: str) -> dict:
@@ -44,9 +48,12 @@ class MtgApi(object):
         :param card_id: Str with the multiverse id from the card
         :return output: dict with the card information
         """
-        data: Response = self.session.get(
-            f"{self.base_url}/v{self.version}/cards/{card_id}"
+        data: HTTPResponse = self.api.request(
+            "GET",
+            f"{self.base_url}/v{self.version}/cards/{card_id}",
+            preload_content=False,
         )
-        if data.status_code != 200:
+        if data.status != 200:
             raise Exception("Card not found")
-        return data.json()["card"]
+        output: dict = json.loads(data.data.decode("utf-8"))
+        return output["card"]
