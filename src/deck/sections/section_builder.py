@@ -1,5 +1,5 @@
 import helpers
-from utils.clean import normalize_str, clean_str, clean_list
+from utils.clean import normalize_str, clean_str
 from src.card.card_controller import Card
 from . import Section
 from utils.filters import remove_basic_lands
@@ -64,5 +64,4 @@ class SectionsBuilder:
             if name in self.domain_helper.allowed_sections:
                 if name == "lands":
                     cards = list(filter(remove_basic_lands, cards))
-                cards = clean_list(cards)
                 self.sections.append(Section(cards, name))

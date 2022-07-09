@@ -89,19 +89,9 @@ class GoldFishDecks(scrapy.Spider):
 
         name: str = loaded_card.xpath("//a/text()")
         cuantity: str = loaded_card.xpath("//td[@class='text-right']/text()")
-        rarity: str = loaded_card.xpath(
-            "//td[@class='price-arena-rarity text-right']/text()"
-        )
-        raw_mana_cost: list = loaded_card.xpath("//span[@class='manacost']/@aria-label")
-        if raw_mana_cost != []:
-            mana_cost = raw_mana_cost[0].split(":")[-1]
-        else:
-            mana_cost = 0
         card_dict: dict = {
             "name": str(name[0]),
             "cuantity": str(cuantity[0]),
-            "rarity": str(rarity[0]),
-            "mana_cost": str(mana_cost),
         }
 
         return card_dict
