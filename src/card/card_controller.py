@@ -29,7 +29,6 @@ class Card(metaclass=Singelton):
         self.domain_helper: helpers.Domain = helpers.Domain()
         self.name: str = card_information.get("name", "")
         self.scryfall: API.Scryfall = API.Scryfall()
-        self.mtg_api: API.MtgApi = API.MtgApi()
         self.colors: list = []
         self.printings: list = []
         self.color_identity: list = []
@@ -39,7 +38,9 @@ class Card(metaclass=Singelton):
         self.rarity: str = ""
         self.edhrec_rank: int = 0
         self.penny_rank: int = 0
-        self.clean_attributes = [
+        self.clean_type: str = ""
+        self.clean_color: str = ""
+        self.clean_attributes: list = [
             "printings",
             "cmc",
             "power",
@@ -53,6 +54,8 @@ class Card(metaclass=Singelton):
             "rarity",
         ]
         self.get_info()
+        self.get_color()
+        self.get_type()
 
     def __str__(self):
         return self.name
@@ -65,27 +68,11 @@ class Card(metaclass=Singelton):
         data: dict = self.check_if_exists()
         if data == {}:
             aditional_data: dict = self.scryfall.get_card_info_by_name(self.name)
-            if "//" in self.name:
-                card_id: int = aditional_data["multiverse_ids"][0]
-                more_data: dict = self.mtg_api.get_card_info_by_id(card_id)
-            else:
-                try:
-                    more_data: dict = self.mtg_api.get_card_info_by_name(
-                        self.name,
-                        {
-                            "type": aditional_data.get("type_line"),
-                            "cmc": int(aditional_data.get("cmc")),
-                        },
-                    )
-                except:
-                    card_id: int = aditional_data["multiverse_ids"][0]
-                    more_data: dict = self.mtg_api.get_card_info_by_id(card_id)
-            data.update(more_data)
             data.update(aditional_data)
         for key in data:
             if key in self.clean_attributes:
                 setattr(self, key, data.get(key, None))
-        self.type: list = [normalize_str(t) for t in data.get("types")]
+        self.type: list = normalize_str(aditional_data.get("type_line"))
         self.raw_data: dict = data
 
     def check_if_exists(self) -> dict:
@@ -95,7 +82,7 @@ class Card(metaclass=Singelton):
         """
         return self.raw_data if hasattr(self, "raw_data") else {}
 
-    def get_color(self) -> str:
+    def get_color(self):
         """
         Method used to define the color of a card Ie :Rakdos ,Gruul, Green
         :return color: A str with the color of the card
@@ -112,7 +99,7 @@ class Card(metaclass=Singelton):
                 )
             else:
                 color = "colorless"
-        return color
+        self.clean_color = color
 
     def first_set_in_format(self, format: str) -> str:
         """
@@ -130,26 +117,31 @@ class Card(metaclass=Singelton):
         reprints.sort(key=itemgetter("released"))
         return reprints[0].get("name")
 
-    def get_type(self) -> str:
+    def get_type(self):
         """
         Methodo used to get a specific type for a card
         :return str: A string with the specific type of the card
         """
         output: str = ""
+        if "//" in self.type:
+            self.type = self.type.split("//")[0]
         if "creature" in self.type:
             output = "creature"
-        elif "land" in self.type:
-            output = "land"
         elif "sorcery" in self.type or "instant" in self.type:
             output = "spell"
-        elif len(self.type) == 1:
-            output = self.type[0]
+        elif "artifcat" in self.type:
+            output = "artifact"
+        elif "enchantment" in self.type:
+            output = "enchantment"
+        elif "artifact" in self.type:
+            output = "artifact"
+        elif "planeswalker" in self.type:
+            output = "planeswalker"
+        elif "land" in self.type:
+            output = "land"
         else:
-            for type in self.type:
-                if type in self.domain_helper.allowed_sections:
-                    output = type
-                    break
-        return output
+            print(str(self.type))
+        self.clean_type = output
 
     def get_prices(self, cuantity: int) -> dict:
         """

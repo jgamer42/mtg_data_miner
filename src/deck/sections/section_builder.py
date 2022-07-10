@@ -43,7 +43,7 @@ class SectionsBuilder:
         )
         for raw_card in raw_cards:
             clean_card: Card = (Card(raw_card), raw_card.get("cuantity"))
-            card_type: str = normalize_str(clean_card[0].get_type())
+            card_type: str = clean_card[0].clean_type
             if card_type in types.keys():
                 types[card_type].append(clean_card)
             else:

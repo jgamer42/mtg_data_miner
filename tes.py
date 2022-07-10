@@ -5,8 +5,8 @@ from src.deck.deck_controller import Deck
 logging.getLogger("scrapy").propagate = False
 logging.getLogger("filelock").propagate = False
 logging.getLogger("urllib3.connectionpool").propagate = False
-# a = Format("pioneer")
-# a.get_spiders_data()
+a = Format("pioneer")
+a.get_spiders_data()
 
 deck_1_raw = {
     "source": "mtg_top8_decks_events",
@@ -233,20 +233,22 @@ deck_2_raw = {
                 "name": "Hallowed Fountain",
                 "cuantity": "\n2\n",
             },
-            {"name": "Island", "cuantity": "\n1\n", "rarity": "\n\n", "mana_cost": "0"},
+            {
+                "name": "Island",
+                "cuantity": "\n1\n",
+            },
             {
                 "name": "Isolated Chapel",
                 "cuantity": "\n1\n",
-                "rarity": "\n1\u00a0Rare\n",
-                "mana_cost": "0",
             },
             {
                 "name": "Otawara, Soaring City",
                 "cuantity": "\n1\n",
-                "rarity": "\n1\u00a0Rare\n",
-                "mana_cost": "0",
             },
-            {"name": "Plains", "cuantity": "\n1\n", "rarity": "\n\n", "mana_cost": "0"},
+            {
+                "name": "Plains",
+                "cuantity": "\n1\n",
+            },
             {
                 "name": "Raffine's Tower",
                 "cuantity": "\n4\n",
@@ -294,7 +296,7 @@ deck_2_raw = {
     "link": "https://www.mtggoldfish.com/archetype/pioneer-esper-control-8413f5ae-6d65-4826-992a-9c2e3511890d",
 }
 
-d1 = Deck(deck_1_raw)
-d1.get_info()
-d2 = Deck(deck_2_raw)
-d2.get_info()
+# d1 = Deck(deck_1_raw)
+# d1.get_info()
+# d2 = Deck(deck_2_raw)
+# d2.get_info()

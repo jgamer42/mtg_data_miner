@@ -1,3 +1,6 @@
+import sys
+
+sys.path.append("/home/user/Escritorio/code/mtg_data_miner")
 import helpers
 import json
 from operator import itemgetter
@@ -17,7 +20,7 @@ class Scryfall:
         self.domain_helper: helpers.Domain = helpers.Domain()
         self.api = urllib3.PoolManager(num_pools=50, maxsize=100)
 
-    @check_execution_time
+    # @check_execution_time
     def get_card_info_by_name(self, card_name: str) -> dict:
         """
         Method used to get detailed card information
@@ -32,6 +35,7 @@ class Scryfall:
         if data.status != 200:
             raise Exception("Card not found try again")
         output = json.loads(data.data.decode("utf-8"))
+        output["printings"] = self.get_card_printings(output.get("prints_search_uri"))
         return output
 
     def get_sets(self) -> list:
@@ -48,3 +52,15 @@ class Scryfall:
         output = list(filter(allowed_sets, procesed_data))
         output.sort(key=itemgetter("released_at"))
         return output
+
+    def get_card_printings(self, url: str) -> list:
+        """
+        Method used to get all reprints of a card
+        :param url: string with the url with the reprints information
+        :return printings: a list with the all reprints of a card
+        """
+        data: HTTPResponse = self.api.request("GET", url, preload_content=False)
+        processed_data: dict = json.loads(data.data.decode("utf-8"))
+        card_prints: list = processed_data.get("data", [])
+        printings: list = list(set([card.get("set").upper() for card in card_prints]))
+        return printings

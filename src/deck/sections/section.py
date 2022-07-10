@@ -25,16 +25,21 @@ class Section(object):
         for card in self.raw_cards:
             if type(card) == dict:
                 new_card: Card = Card(card)
-                self.cards_cuantity[str(new_card)] = card.get("cuantity")
+                self.cards_cuantity[str(new_card)] = int(card.get("cuantity", 0))
                 self.cards.append(new_card)
             elif type(card) == tuple:
-                self.cards_cuantity[str(card[0])] = card[1]
+                self.cards_cuantity[str(card[0])] = int(card[1])
                 self.cards.append(card[0])
             else:
                 raise Exception("format to build sections not allowed")
 
-    @check_execution_time
-    def get_info(self, format) -> dict:
+    # @check_execution_time
+    def get_info(self, format: str) -> dict:
+        """
+        Method used to build the basic information for a section
+        :param format: the name of the format that belongs this sections Ie 'standard'
+        :return dict: a dict with the information
+        """
         output: dict = {
             f"{self.name}_usd": 0.0,
             f"{self.name}_eur": 0.0,
@@ -51,7 +56,7 @@ class Section(object):
             cards_count += card_cuantity
             card_collection: str = card.first_set_in_format(format)
             card_prices: dict = card.get_prices(card_cuantity)
-            color: str = card.get_color()
+            color: str = card.clean_color
             if f"{self.name}_{card.rarity}" in output.keys():
                 output[f"{self.name}_{card.rarity}"] += card_cuantity
             else:
