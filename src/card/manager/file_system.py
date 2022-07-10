@@ -9,7 +9,12 @@ class FileSystem:
     def __init__(self, card: object):
         self.card: object = card
         self.types_to_export: list = [list, dict, str, int]
-        self.exclude_fields: list = ["raw_data", "clean_attributes", "managers"]
+        self.exclude_fields: list = [
+            "raw_data",
+            "clean_attributes",
+            "managers",
+            "prices",
+        ]
         self.path: str = (
             os.getenv("MTG_PROJECT_ROOT_PATH", "")
             + f"/data/cards/{str(self.card)}.json"

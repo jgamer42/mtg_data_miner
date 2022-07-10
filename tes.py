@@ -2,14 +2,21 @@ import logging
 from src.format.format_controller import Format
 from src.deck.deck_controller import Deck
 from src.card.manager.file_system import FileSystem
+import pandas as pd
 
+# telethon.network.mtprotosender
+# telethon.extensions.messagepacker
 logging.getLogger("scrapy").propagate = False
 logging.getLogger("filelock").propagate = False
 logging.getLogger("urllib3.connectionpool").propagate = False
+logging.getLogger("telethon.extensions.messagepacker").propagate = False
+logging.getLogger("telethon.network.mtprotosender").propagate = False
 a = Format("pioneer")
 a.get_spiders_data()
 a.build_report()
 a.export()
+data = pd.DataFrame(a.processed_data)
+data.to_csv("salida.csv")
 
 deck_1_raw = {
     "source": "mtg_top8_decks_events",

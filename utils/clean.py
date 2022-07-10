@@ -1,6 +1,5 @@
 import re
 import copy
-from typing import Union
 
 
 def dict_list_2_list(data: dict) -> list:

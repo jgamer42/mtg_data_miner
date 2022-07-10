@@ -32,7 +32,6 @@ class Scryfall:
         if data.status != 200:
             raise Exception("Card not found try again")
         output = json.loads(data.data.decode("utf-8"))
-        output["printings"] = self.get_card_printings(output.get("prints_search_uri"))
         return output
 
     def get_sets(self) -> list:

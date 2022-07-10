@@ -152,3 +152,4 @@ airflow.cfg
 exports.txt
 *cache*
 .vscode
+*.session

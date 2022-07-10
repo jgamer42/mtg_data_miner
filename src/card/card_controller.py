@@ -27,11 +27,12 @@ class Card(metaclass=Singelton):
         self.domain_helper: helpers.Domain = helpers.Domain()
         self.name: str = card_information.get("name", "")
         self.scryfall: API.Scryfall = API.Scryfall()
+        self.mtgstocks: API.MtgStocks = API.MtgStocks()
         self.colors: list = []
         self.printings: list = []
         self.color_identity: list = []
         self.cmc: float = 0.0
-        self.prices: dict = {}
+        self.prices: dict = self.mtgstocks.get_prices(self.name)
         self.reserved: bool = False
         self.rarity: str = ""
         self.edhrec_rank: int = 0
@@ -46,7 +47,6 @@ class Card(metaclass=Singelton):
             "colors",
             "color_identity",
             "reserved",
-            "prices",
             "edhrec_rank",
             "penny_rank",
             "rarity",
@@ -68,6 +68,9 @@ class Card(metaclass=Singelton):
         data: dict = {}
         if not self.check_if_exists():
             aditional_data: dict = self.scryfall.get_card_info_by_name(self.name)
+            aditional_data["printings"] = self.scryfall.get_card_printings(
+                aditional_data["prints_search_uri"]
+            )
             data.update(aditional_data)
         else:
             raw_data: dict = self.load()
@@ -143,31 +146,14 @@ class Card(metaclass=Singelton):
             output = "planeswalker"
         elif "land" in self.type:
             output = "land"
-        else:
-            print(str(self.type))
         self.clean_type = output
 
-    def get_prices(self, cuantity: int) -> dict:
+    def get_prices(self) -> dict:
         """
-        Method used to determine a possible card prices from his cuantity
-        :param cuantity: the numbers of copies of the card
+        Method used to return the dict of prices
         :return output: a dict the prices in tix,usd,eur
         """
-        usd: float = (
-            float(self.prices.get("usd", 0.0)) if self.prices.get("usd") else 0.0
-        )
-        eur: float = (
-            float(self.prices.get("eur", 0.0)) if self.prices.get("eur") else 0.0
-        )
-        tix: float = (
-            float(self.prices.get("tix", 0.0)) if self.prices.get("tix") else 0.0
-        )
-        output: dict = {
-            "usd": usd * cuantity,
-            "tix": eur * cuantity,
-            "eur": tix * cuantity,
-        }
-        return output
+        return self.prices
 
     def export(self):
         self.managers["file_system"].export("json")
