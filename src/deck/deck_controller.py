@@ -127,3 +127,7 @@ class Deck(object):
         for section in self.sections:
             output.update(section.get_info(self.format))
         return output
+
+    def export(self):
+        for card in self.cards:
+            card.export()

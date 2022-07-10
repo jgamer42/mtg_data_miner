@@ -21,7 +21,18 @@ class Domain:
         "creatures",
     )
 
-    basic_lands: tuple = ("plains", "swamp", "mountain", "forest", "island")
+    basic_lands: tuple = (
+        "snow-covered plains",
+        "snow-covered swamp",
+        "snow-covered mountain",
+        "snow-covered forest",
+        "snow-covered island",
+        "plains",
+        "swamp",
+        "mountain",
+        "forest",
+        "island",
+    )
     allowed_sets: tuple = ("core", "expansion", "draft_innovation", "commander")
     strategies: tuple = (
         "voltron",
@@ -59,9 +70,9 @@ class Domain:
         "RW": "Boros",
         "GU": "Simic",
         "BUW": "Esper",
-        "BUR": "Grixis",
+        "BRU": "Grixis",
         "BGR": "Jund",
-        "RGW": "Naya",
+        "GRW": "Naya",
         "GUW": "Bant",
         "BGW": "Abzan",
         "RUW": "Jeskai",

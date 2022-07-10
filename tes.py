@@ -1,12 +1,15 @@
 import logging
 from src.format.format_controller import Format
 from src.deck.deck_controller import Deck
+from src.card.manager.file_system import FileSystem
 
 logging.getLogger("scrapy").propagate = False
 logging.getLogger("filelock").propagate = False
 logging.getLogger("urllib3.connectionpool").propagate = False
 a = Format("pioneer")
 a.get_spiders_data()
+a.build_report()
+a.export()
 
 deck_1_raw = {
     "source": "mtg_top8_decks_events",
@@ -297,6 +300,10 @@ deck_2_raw = {
 }
 
 # d1 = Deck(deck_1_raw)
+# d1.export()
+# m = FileSystem(a)
+# m.export("json")
+# print(m.find())
 # d1.get_info()
 # d2 = Deck(deck_2_raw)
 # d2.get_info()

@@ -55,3 +55,7 @@ class Format(object):
         data: list = []
         for deck in self.decks:
             data.append(deck.get_info())
+
+    def export(self):
+        for deck in self.decks:
+            deck.export()

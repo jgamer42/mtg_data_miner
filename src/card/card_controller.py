@@ -1,11 +1,9 @@
 from operator import itemgetter
-import sys
 import helpers
-
-sys.path.append("/home/user/Escritorio/code/mtg_data_miner")
 from data_sources import API
 from observability.execution_time import check_execution_time
 from utils.clean import normalize_str
+from .manager.file_system import FileSystem
 
 
 class Singelton(type):
@@ -52,7 +50,9 @@ class Card(metaclass=Singelton):
             "edhrec_rank",
             "penny_rank",
             "rarity",
+            "type_line",
         ]
+        self.managers: dict = {"file_system": FileSystem(self)}
         self.get_info()
         self.get_color()
         self.get_type()
@@ -65,22 +65,26 @@ class Card(metaclass=Singelton):
         Method used to load card information, it could come from API or from a manager
         and filter the relevant fields
         """
-        data: dict = self.check_if_exists()
-        if data == {}:
+        data: dict = {}
+        if not self.check_if_exists():
             aditional_data: dict = self.scryfall.get_card_info_by_name(self.name)
             data.update(aditional_data)
+        else:
+            raw_data: dict = self.load()
+            data.update(raw_data)
         for key in data:
             if key in self.clean_attributes:
                 setattr(self, key, data.get(key, None))
-        self.type: list = normalize_str(aditional_data.get("type_line"))
+        self.type: list = normalize_str(data.get("type_line"))
         self.raw_data: dict = data
+        self.managers["file_system"] = FileSystem(self)
 
-    def check_if_exists(self) -> dict:
+    def check_if_exists(self) -> bool:
         """
         This methods checks in the managers if the raw_card information exists
-        :return dict: a dict with the raw card information
+        :return bool: a flag if the data exists or not
         """
-        return self.raw_data if hasattr(self, "raw_data") else {}
+        return self.managers["file_system"].find()
 
     def get_color(self):
         """
@@ -164,3 +168,9 @@ class Card(metaclass=Singelton):
             "eur": tix * cuantity,
         }
         return output
+
+    def export(self):
+        self.managers["file_system"].export("json")
+
+    def load(self) -> dict:
+        return self.managers["file_system"].load()

@@ -1,6 +1,3 @@
-import sys
-
-sys.path.append("/home/user/Escritorio/code/mtg_data_miner")
 import helpers
 import json
 from operator import itemgetter

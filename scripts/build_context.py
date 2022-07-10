@@ -1,9 +1,5 @@
-import os
-import sys
 import json
 import logging
-
-sys.path.append(os.getcwd())
 from scrapy import signals
 from data_sources.API import Scryfall
 from data_sources.spiders import MtgWtf
