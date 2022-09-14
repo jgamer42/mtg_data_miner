@@ -62,7 +62,7 @@ class MtgStocks(metaclass=Singleton):
     @async_handler(client=client)
     async def get_prices(self, card_name) -> dict:
         list_prices: list = []
-        chanel: str = "https://t.me/crinto_automation"
+        chanel: str = "test"
         my_channel: object = await self.client.get_entity(chanel)
         bot_results: object = await self.client(
             GetInlineBotResultsRequest("@MTGStocksBot ", my_channel, card_name, "")

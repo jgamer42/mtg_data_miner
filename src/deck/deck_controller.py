@@ -59,19 +59,14 @@ class Deck(object):
         edh_rank_average: int = 0
         penny_rank_average: int = 0
         reserved_list_count: int = 0
-        prices: dict = {"max": 0, "min": 0, "avg": 0}
         basic_data: dict = self.get_atributes()
         sections_data: dict = self.get_sections_data()
         for card in self.cards:
             card_name: str = str(card)
             card_cuantity: int = self.cards_cuantity.get(card_name, 0)
             color: str = card.clean_color
-            card_prices: dict = card.get_prices()
             card_collection: str = card.first_set_in_format(self.format)
             cmc: int = int(card.cmc)
-            prices["max"] += card_prices["max"] * card_cuantity
-            prices["min"] += card_prices["min"] * card_cuantity
-            prices["avg"] += card_prices["avg"] * card_cuantity
             if f"{card.rarity}" in rarity.keys():
                 rarity[f"{card.rarity}"] += card_cuantity
             else:
@@ -111,7 +106,6 @@ class Deck(object):
             f"avg_penny_rank": penny_rank_average / len(self.cards),
             f"color": self.domain_helper.colors_map["".join(card_colors)],
         }
-        data.update(prices)
         data.update(mana_wave)
         data.update(rarity)
         data.update(basic_data)

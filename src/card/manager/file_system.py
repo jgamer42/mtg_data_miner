@@ -15,9 +15,11 @@ class FileSystem:
             "managers",
             "prices",
         ]
+        card_name = str(card)
+        if "//" in str(card) or "/" in str(card):
+            card_name = str(card).replace("/", "").strip()
         self.path: str = (
-            os.getenv("MTG_PROJECT_ROOT_PATH", "")
-            + f"/data/cards/{str(self.card)}.json"
+            os.getenv("MTG_PROJECT_ROOT_PATH", "") + f"/data/cards/{card_name}.json"
         )
         self.clean_data: dict = {}
         raw_data: dict = vars(self.card)

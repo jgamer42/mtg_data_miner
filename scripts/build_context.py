@@ -1,5 +1,8 @@
 import json
 import logging
+import sys
+
+sys.path.append("/home/user/Escritorio/code/mtg_data_miner")
 from scrapy import signals
 from data_sources.API import Scryfall
 from data_sources.spiders import MtgWtf

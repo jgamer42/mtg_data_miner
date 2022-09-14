@@ -40,11 +40,7 @@ class Section(object):
         :param format: the name of the format that belongs this sections Ie 'standard'
         :return dict: a dict with the information
         """
-        output: dict = {
-            f"{self.name}_min": 0.0,
-            f"{self.name}_max": 0.0,
-            f"{self.name}_avg": 0.0,
-        }
+        output: dict = {}
         colors: dict = {}
         collections: dict = {}
         reserved_list_count: int = 0
@@ -55,11 +51,7 @@ class Section(object):
             card_cuantity: int = int(self.cards_cuantity.get(str(card), 0))
             cards_count += card_cuantity
             card_collection: str = card.first_set_in_format(format)
-            card_prices: dict = card.get_prices()
             color: str = card.clean_color
-            output[f"{self.name}_max"] += card_prices["max"] * card_cuantity
-            output[f"{self.name}_min"] += card_prices["min"] * card_cuantity
-            output[f"{self.name}_avg"] += card_prices["avg"] * card_cuantity
             if f"{self.name}_{card.rarity}" in output.keys():
                 output[f"{self.name}_{card.rarity}"] += card_cuantity
             else:
@@ -81,13 +73,21 @@ class Section(object):
         output.update(
             {
                 f"{self.name}_cards": cards_count,
-                f"{self.name}_domain_color": max(colors, key=lambda x: colors[x]),
+                f"{self.name}_domain_color": max(colors, key=lambda x: colors[x])
+                if colors != {}
+                else "not info",
                 f"{self.name}_domain_collection": max(
                     collections, key=lambda x: collections[x]
-                ),
+                )
+                if collections != {}
+                else "not info",
                 f"{self.name}_reserved_cards": reserved_list_count,
-                f"{self.name}_avg_edhreck_rank": edh_rank_average / len(self.cards),
-                f"{self.name}_avg_penny_rank": penny_rank_average / len(self.cards),
+                f"{self.name}_avg_edhreck_rank": edh_rank_average / len(self.cards)
+                if len(self.cards) > 0
+                else float("nan"),
+                f"{self.name}_avg_penny_rank": penny_rank_average / len(self.cards)
+                if len(self.cards) > 0
+                else float("nan"),
             }
         )
         return normalize_dict(output)

@@ -153,3 +153,4 @@ exports.txt
 *cache*
 .vscode
 *.session
+*.csv

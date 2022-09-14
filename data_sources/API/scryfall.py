@@ -45,7 +45,7 @@ class Scryfall:
         procesed_data: dict = json.loads(data.data.decode("utf-8"))
         if data.status != 200:
             raise Exception("Card not found try again")
-        output = list(filter(allowed_sets, procesed_data))
+        output = list(filter(allowed_sets, procesed_data["data"]))
         output.sort(key=itemgetter("released_at"))
         return output
 

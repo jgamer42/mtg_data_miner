@@ -1,6 +1,7 @@
 import logging
 from src.format.format_controller import Format
 from src.deck.deck_controller import Deck
+from src.card.card_controller import Card
 from src.card.manager.file_system import FileSystem
 import pandas as pd
 
@@ -11,12 +12,12 @@ logging.getLogger("filelock").propagate = False
 logging.getLogger("urllib3.connectionpool").propagate = False
 logging.getLogger("telethon.extensions.messagepacker").propagate = False
 logging.getLogger("telethon.network.mtprotosender").propagate = False
-a = Format("pioneer")
+a = Format("legacy")
 a.get_spiders_data()
 a.build_report()
 a.export()
 data = pd.DataFrame(a.processed_data)
-data.to_csv("salida.csv")
+data.to_csv("legacy.csv")
 
 deck_1_raw = {
     "source": "mtg_top8_decks_events",
@@ -314,3 +315,6 @@ deck_2_raw = {
 # d1.get_info()
 # d2 = Deck(deck_2_raw)
 # d2.get_info()
+# a = Card({"name":"Mana Crypt"})
+# a.first_set_in_format("vintage")
+# a.export()
