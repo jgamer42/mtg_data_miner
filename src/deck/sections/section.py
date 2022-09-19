@@ -33,7 +33,6 @@ class Section(object):
             else:
                 raise Exception("format to build sections not allowed")
 
-    # @check_execution_time
     def get_info(self, format: str) -> dict:
         """
         Method used to build the basic information for a section

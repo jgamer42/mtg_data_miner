@@ -9,7 +9,7 @@ import sys
 from dotenv import load_dotenv
 import os
 
-sys.path.append("/home/user/Escritorio/code/mtg_data_miner")
+sys.path.append(os.getenv("MTG_PROJECT_ROOT_PATH"))
 from observability.execution_time import check_execution_time
 
 load_dotenv()
@@ -58,7 +58,6 @@ class MtgStocks(metaclass=Singleton):
             except SessionPasswordNeededError:
                 await self.client.sign_in(password=input("Password: "))
 
-    # @check_execution_time
     @async_handler(client=client)
     async def get_prices(self, card_name) -> dict:
         list_prices: list = []

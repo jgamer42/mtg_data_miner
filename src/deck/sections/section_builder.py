@@ -31,7 +31,6 @@ class SectionsBuilder:
             raise Exception("format for build sections not allowed ")
         return self.sections
 
-    @check_execution_time
     def build_from_cards_list(self):
         """
         This methods build the sections when the raw_data
@@ -52,7 +51,6 @@ class SectionsBuilder:
             new_section: Section = Section(types[type], type)
             self.sections.append(new_section)
 
-    @check_execution_time
     def build_from_defined(self):
         """
         Method used to build deck information when the

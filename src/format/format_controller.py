@@ -29,14 +29,7 @@ class Format(object):
         :param item: A dict with the scrapped raw data information
         """
         self.decks.append(Deck(item))
-        # output = f"{item.get('source')}_{item.get('name')}.json"
-        # if os.path.exists(output):
-        #    output = f"{item.get('source')}_{item.get('name','').strip()}_{uuid.uuid4()}.json"
-        # file = open(output, "w+")
-        # json.dump(item, file)
-        # file.close()
 
-    @check_execution_time
     def get_spiders_data(self) -> None:
         """
         Method used to get the data from the spiders allowed
@@ -50,7 +43,6 @@ class Format(object):
             process.crawl(crawler, format=self.name)
         process.start()
 
-    @check_execution_time
     def build_report(self):
         data: list = []
         for deck in self.decks:

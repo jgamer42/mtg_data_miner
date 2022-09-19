@@ -49,7 +49,6 @@ class Deck(object):
                 self.strategy: str = strategy
                 break
 
-    @check_execution_time
     def get_info(self):
         mana_wave: dict = {}
         collections: dict = {}

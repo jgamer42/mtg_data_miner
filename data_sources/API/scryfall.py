@@ -17,20 +17,21 @@ class Scryfall:
         self.domain_helper: helpers.Domain = helpers.Domain()
         self.api = urllib3.PoolManager(num_pools=50, maxsize=100)
 
-    # @check_execution_time
     def get_card_info_by_name(self, card_name: str) -> dict:
         """
         Method used to get detailed card information
         :param card_name: Str with the name of the card to find
         :return output: dict with the card information
         """
+        if "&" in card_name:
+            card_name = card_name.replace("&", "")
         data: HTTPResponse = self.api.request(
             "GET",
             f"{self.base_url}/cards/named?fuzzy={card_name}",
             preload_content=False,
         )
         if data.status != 200:
-            raise Exception("Card not found try again")
+            raise Exception("Card not found try again", card_name)
         output = json.loads(data.data.decode("utf-8"))
         return output
 

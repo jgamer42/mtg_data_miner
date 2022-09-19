@@ -1,8 +1,9 @@
 import json
 import logging
 import sys
+import os
 
-sys.path.append("/home/user/Escritorio/code/mtg_data_miner")
+sys.path.append(os.getcwd())
 from scrapy import signals
 from data_sources.API import Scryfall
 from data_sources.spiders import MtgWtf
@@ -49,8 +50,6 @@ for format in CONTEXT.keys():
                 "released": set["released_at"],
                 "name": set["name"],
             }
-    with open(
-        f"/home/user/Escritorio/code/mtg_data_miner/helpers/context/{format}.json", "w+"
-    ) as file:
+    with open(f"{os.getcwd()}/helpers/context/{format}.json", "w+") as file:
         json.dump(data, file)
         file.close()
