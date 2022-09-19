@@ -1,1 +1,22 @@
-{"DMU": {"released": "2022-09-09", "name": "Dominaria United"}, "SNC": {"released": "2022-04-29", "name": "Streets of New Capenna"}, "NEO": {"released": "2022-02-18", "name": "Kamigawa: Neon Dynasty"}, "VOW": {"released": "2021-11-19", "name": "Innistrad: Crimson Vow"}, "MID": {"released": "2021-09-24", "name": "Innistrad: Midnight Hunt"}}
+{
+    "DMU": {
+        "released": "2022-09-09",
+        "name": "Dominaria United"
+    },
+    "SNC": {
+        "released": "2022-04-29",
+        "name": "Streets of New Capenna"
+    },
+    "NEO": {
+        "released": "2022-02-18",
+        "name": "Kamigawa: Neon Dynasty"
+    },
+    "VOW": {
+        "released": "2021-11-19",
+        "name": "Innistrad: Crimson Vow"
+    },
+    "MID": {
+        "released": "2021-09-24",
+        "name": "Innistrad: Midnight Hunt"
+    }
+}

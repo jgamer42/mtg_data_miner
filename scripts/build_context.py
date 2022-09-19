@@ -1,13 +1,14 @@
 import json
 import logging
-import sys
 import os
+import sys
 
 sys.path.append(os.getcwd())
 from scrapy import signals
+from scrapy.crawler import Crawler, CrawlerProcess
+
 from data_sources.API import Scryfall
 from data_sources.spiders import MtgWtf
-from scrapy.crawler import CrawlerProcess, Crawler
 
 logging.getLogger("scrapy").propagate = False
 logging.getLogger("filelock").propagate = False

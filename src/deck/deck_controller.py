@@ -1,7 +1,7 @@
 import helpers
-from observability.execution_time import check_execution_time
-from .sections import SectionsBuilder
 from utils.clean import normalize_dict
+
+from .sections import SectionsBuilder
 
 
 class Deck(object):
@@ -10,7 +10,7 @@ class Deck(object):
     """
 
     def __init__(self, raw_data: dict):
-        self.attributes: list = ["source", "name", "link", "format", "format_info"]
+        self.attributes: list = ["source", "name", "link", "format"]
         self.name: str = ""
         self.format: str = ""
         self.cards: list = []
@@ -50,7 +50,6 @@ class Deck(object):
                 break
 
     def get_info(self):
-        mana_wave: dict = {}
         collections: dict = {}
         colors: dict = {}
         rarity: dict = {}
@@ -67,29 +66,24 @@ class Deck(object):
             card_collection: str = card.first_set_in_format(self.format)
             cmc: int = int(card.cmc)
             if f"{card.rarity}" in rarity.keys():
-                rarity[f"{card.rarity}"] += card_cuantity
+                rarity[f"{card.rarity}"] += int(card_cuantity)
             else:
-                rarity[f"{card.rarity}"] = card_cuantity
+                rarity[f"{card.rarity}"] = int(card_cuantity)
 
             if color in colors.keys():
-                colors[color] += card_cuantity
+                colors[color] += int(card_cuantity)
             else:
-                colors[color] = card_cuantity
+                colors[color] = int(card_cuantity)
             if card_collection in collections.keys():
-                collections[card_collection] += card_cuantity
+                collections[card_collection] += int(card_cuantity)
             else:
-                collections[card_collection] = card_cuantity
+                collections[card_collection] = int(card_cuantity)
             if card.reserved:
                 reserved_list_count += card_cuantity
             if card.edhrec_rank:
-                edh_rank_average += card.edhrec_rank
+                edh_rank_average += float(card.edhrec_rank)
             if card.penny_rank:
-                penny_rank_average += card.penny_rank
-            if card.clean_type != "land":
-                if f"turn_{cmc}" in mana_wave.keys():
-                    mana_wave[f"turn_{cmc}"] += card_cuantity
-                else:
-                    mana_wave[f"turn_{cmc}"] = card_cuantity
+                penny_rank_average += float(card.penny_rank)
             if hasattr(card, "colors") and card.colors != []:
                 card_colors += card.colors
             else:
@@ -105,7 +99,6 @@ class Deck(object):
             f"avg_penny_rank": penny_rank_average / len(self.cards),
             f"color": self.domain_helper.colors_map["".join(card_colors)],
         }
-        data.update(mana_wave)
         data.update(rarity)
         data.update(basic_data)
         data.update(sections_data)

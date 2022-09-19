@@ -1,8 +1,10 @@
 from operator import itemgetter
+
 import helpers
 from data_sources import API
 from observability.execution_time import check_execution_time
 from utils.clean import normalize_str
+
 from .manager.file_system import FileSystem
 
 
@@ -10,7 +12,7 @@ class Singelton(type):
     _instances: dict = {}
     """
     Class used as a singelton implementation
-    this singelton implementation depends 
+    this singelton implementation depends
     of the format that is go to be loaded
     """
 
@@ -145,13 +147,6 @@ class Card(metaclass=Singelton):
         elif "land" in self.type:
             output = "land"
         self.clean_type = output
-
-    def get_prices(self) -> dict:
-        """
-        Method used to return the dict of prices
-        :return output: a dict the prices in tix,usd,eur
-        """
-        return self.prices
 
     def export(self):
         self.managers["file_system"].export("json")

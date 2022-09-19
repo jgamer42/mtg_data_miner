@@ -1,9 +1,10 @@
 import helpers
-from utils.clean import normalize_str, clean_str
-from src.card.card_controller import Card
-from . import Section
-from utils.filters import remove_basic_lands
 from observability.execution_time import check_execution_time
+from src.card.card_controller import Card
+from utils.clean import clean_str, normalize_str
+from utils.filters import remove_basic_lands
+
+from . import Section
 
 
 class SectionsBuilder:

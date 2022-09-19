@@ -2,7 +2,7 @@
 
 - For get deep card info is used this [API](https://docs.magicthegathering.io/)
 
-- For metagame info is used:  
+- For metagame info is used:
   - Scrapped the page [MtgGoldfish](https://www.mtggoldfish.com/metagame/standard#paper)
 
 ## Tecnologies

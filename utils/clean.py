@@ -1,5 +1,5 @@
-import re
 import copy
+import re
 
 
 def dict_list_2_list(data: dict) -> list:

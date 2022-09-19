@@ -1,9 +1,11 @@
-from telethon.tl.types import PeerChannel
+# import functools
+
 from telethon import TelegramClient
-from telethon.errors import SessionPasswordNeededError
-from telethon.tl.functions.messages import GetInlineBotResultsRequest
-from telethon.tl.functions.messages import SendInlineBotResultRequest
-import functools
+
+# from telethon.errors import SessionPasswordNeededError
+# from telethon.tl.functions.messages import (GetInlineBotResultsRequest,
+#                                            SendInlineBotResultRequest)
+# from telethon.tl.types import PeerChannel
 
 """api_id = "10695897"
 api_hash = "11b26c1d85ab1f7d15362211b2f08b62"

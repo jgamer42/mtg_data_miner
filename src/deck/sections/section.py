@@ -1,7 +1,6 @@
 import helpers
-from utils.clean import normalize_dict
 from src.card.card_controller import Card
-from observability.execution_time import check_execution_time
+from utils.clean import normalize_dict
 
 
 class Section(object):
@@ -43,8 +42,8 @@ class Section(object):
         colors: dict = {}
         collections: dict = {}
         reserved_list_count: int = 0
-        edh_rank_average: int = 0
-        penny_rank_average: int = 0
+        edh_rank_average: float = 0
+        penny_rank_average: float = 0
         cards_count: int = 0
         for card in self.cards:
             card_cuantity: int = int(self.cards_cuantity.get(str(card), 0))
@@ -66,9 +65,9 @@ class Section(object):
             if card.reserved:
                 reserved_list_count += card_cuantity
             if card.edhrec_rank:
-                edh_rank_average += card.edhrec_rank
+                edh_rank_average += float(card.edhrec_rank)
             if card.penny_rank:
-                penny_rank_average += card.penny_rank
+                penny_rank_average += float(card.penny_rank)
         output.update(
             {
                 f"{self.name}_cards": cards_count,
@@ -81,10 +80,14 @@ class Section(object):
                 if collections != {}
                 else "not info",
                 f"{self.name}_reserved_cards": reserved_list_count,
-                f"{self.name}_avg_edhreck_rank": edh_rank_average / len(self.cards)
+                f"{self.name}_avg_edhreck_rank": float(
+                    edh_rank_average / len(self.cards)
+                )
                 if len(self.cards) > 0
                 else float("nan"),
-                f"{self.name}_avg_penny_rank": penny_rank_average / len(self.cards)
+                f"{self.name}_avg_penny_rank": float(
+                    penny_rank_average / len(self.cards)
+                )
                 if len(self.cards) > 0
                 else float("nan"),
             }

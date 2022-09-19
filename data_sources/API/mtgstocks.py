@@ -1,15 +1,17 @@
+import functools
+import math
+import os
+import sys
 from operator import itemgetter
+
+from dotenv import load_dotenv
 from telethon import TelegramClient
 from telethon.errors import SessionPasswordNeededError
 from telethon.tl.functions.messages import GetInlineBotResultsRequest
-import functools
-import math
-from utils.filters import find_price_in_str
-import sys
-from dotenv import load_dotenv
-import os
 
-sys.path.append(os.getenv("MTG_PROJECT_ROOT_PATH"))
+from utils.filters import find_price_in_str
+
+sys.path.append(os.getenv("MTG_PROJECT_ROOT_PATH", ""))
 from observability.execution_time import check_execution_time
 
 load_dotenv()
@@ -63,7 +65,7 @@ class MtgStocks(metaclass=Singleton):
         list_prices: list = []
         chanel: str = "test"
         my_channel: object = await self.client.get_entity(chanel)
-        bot_results: object = await self.client(
+        bot_results: TelegramClient = await self.client(
             GetInlineBotResultsRequest("@MTGStocksBot ", my_channel, card_name, "")
         )
         prices: list = bot_results.results

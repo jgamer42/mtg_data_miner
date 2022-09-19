@@ -1,13 +1,10 @@
-from black import out
-import helpers
 from scrapy import signals
+from scrapy.crawler import Crawler, CrawlerProcess
+
+import helpers
 from data_sources import spiders
 from observability.execution_time import check_execution_time
-from scrapy.crawler import CrawlerProcess, Crawler
 from src.deck.deck_controller import Deck
-import json
-import os
-import uuid
 
 
 class Format(object):
@@ -28,7 +25,8 @@ class Format(object):
         Method used as a trigger when a spiders gets an item
         :param item: A dict with the scrapped raw data information
         """
-        self.decks.append(Deck(item))
+        new_deck = Deck(item)
+        self.decks.append(new_deck)
 
     def get_spiders_data(self) -> None:
         """

@@ -1,5 +1,5 @@
-import os
 import json
+import os
 from operator import itemgetter
 
 
@@ -7,7 +7,7 @@ class Singelton(type):
     _instances: dict = {}
     """
     Class used as a singelton implementation
-    this singelton implementation depends 
+    this singelton implementation depends
     of the format that is go to be loaded
     """
 

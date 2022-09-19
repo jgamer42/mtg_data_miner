@@ -1,2 +1,2 @@
-from .scryfall import Scryfall
 from .mtgstocks import MtgStocks
+from .scryfall import Scryfall

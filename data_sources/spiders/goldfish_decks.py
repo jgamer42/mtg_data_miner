@@ -1,5 +1,5 @@
 import scrapy
-from lxml import html, etree
+from lxml import etree, html
 
 
 class GoldFishDecks(scrapy.Spider):
@@ -60,7 +60,6 @@ class GoldFishDecks(scrapy.Spider):
             "source": self.name,
             "name": title,
             "format": format,
-            "format_info": meta_info,
             "sections": {},
             "link": response.url,
         }
